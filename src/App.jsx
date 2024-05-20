@@ -50,8 +50,15 @@ const App = () => {
 
   return (
     <div>
-      <Navbar dropdownLabel={getDropdownLabel()} options={options} selectedOptions={selectedOptions} toggleOption={toggleOption} />
-      <Map/>
+      <Navbar 
+      dropdownLabel={getDropdownLabel()} 
+      options={options} 
+      selectedOptions={selectedOptions} 
+      toggleOption={toggleOption} 
+      />
+      
+      <Map selectedOptions={selectedOptions}/>
+      
       <div className="fixed bottom-4 left-4 p-2 z-50">
         {!isOpen && <IndexButton handleButtonClick={handleButtonClick} />}
         {isOpen && (
