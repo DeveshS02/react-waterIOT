@@ -25,9 +25,9 @@ const MapComponent = ({ selectedOptions }) => {
   useEffect(() => {
     const fetchData = async () => {
       const [data1, data2, data3] = await Promise.all([
-        fetch_data('http://localhost:3000/tank/coordinates'),
-        fetch_data('http://localhost:3000/borewell/coordinates'),
-        fetch_data('http://localhost:3000/watermeter/coordinates')
+        fetch_data('https://api-gateway-green.vercel.app/water/staticnodesC'),
+        fetch_data('https://api-gateway-green.vercel.app/water/borewellnodesC'),
+        fetch_data('https://api-gateway-green.vercel.app/water/waterC')
       ]);
 
       setTank_nodes(data1);
@@ -41,9 +41,9 @@ const MapComponent = ({ selectedOptions }) => {
   useEffect(() => {
     const fetchData = async () => {
       const [data1, data2, data3] = await Promise.all([
-        fetch_data('http://localhost:3000/tank/graph'),
-        fetch_data('http://localhost:3000/borewell/graph'),
-        fetch_data('http://localhost:3000/watermeter/graph')
+        fetch_data('https://api-gateway-green.vercel.app/water/tankdata'),
+        fetch_data('https://api-gateway-green.vercel.app/water/borewellgraphC'),
+        fetch_data('https://api-gateway-green.vercel.app/water/latestwaterC')
       ]);
 
       setTank_data(data1);
