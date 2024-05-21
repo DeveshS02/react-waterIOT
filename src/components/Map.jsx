@@ -25,7 +25,7 @@ const MapComponent = ({ selectedOptions }) => {
   useEffect(() => {
     const fetchData = async () => {
       const [data1, data2, data3] = await Promise.all([
-        fetch_data('https://spcrc.iiit.ac.in/water/staticnodesC/'),
+        fetch_data('http://localhost:3000/tank/coordinates'),
         fetch_data('http://localhost:3000/borewell/coordinates'),
         fetch_data('http://localhost:3000/watermeter/coordinates')
       ]);
