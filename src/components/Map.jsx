@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Tooltip, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import createCustomIcon from '../utils/createCustomIcon';
 import icon_bore from '../images/borewell.png';
@@ -25,7 +25,7 @@ const MapComponent = ({ selectedOptions }) => {
   useEffect(() => {
     const fetchData = async () => {
       const [data1, data2, data3] = await Promise.all([
-        fetch_data('http://localhost:3000/tank/coordinates'),
+        fetch_data('https://spcrc.iiit.ac.in/water/staticnodesC/'),
         fetch_data('http://localhost:3000/borewell/coordinates'),
         fetch_data('http://localhost:3000/watermeter/coordinates')
       ]);
@@ -84,6 +84,25 @@ const MapComponent = ({ selectedOptions }) => {
     return false;
   };
 
+  //Function to display walls of IIIT-H
+  const developWalls = () => {
+    const wall1 = [
+      [17.44431215246116, 78.34421333959695],
+      [17.448959007851123, 78.3484512379919],
+      [17.444986217014176, 78.35261351452294],
+      [17.444150848626073, 78.35110228147538],
+      [17.441949414491706, 78.34974490029627],
+      [17.44431215246116, 78.34421333959695]
+    ];
+    return (
+      <Polyline positions={wall1} color="black" weight={3} opacity={0.8}>
+        <Tooltip sticky>
+          <b>IIIT Hyderabad Bounds</b>
+        </Tooltip>
+      </Polyline>
+    );
+  };
+
   return (
     <div className="w-[100vw] h-[100vh]">
       <MapContainer
@@ -101,6 +120,9 @@ const MapComponent = ({ selectedOptions }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
+
+        {developWalls()}
+
         {Tank_nodes.filter(node => shouldDisplayNode(node, 'tank')).map((node, index) => {
           const coordinates = Array.isArray(node.coordinates)
             ? node.coordinates
