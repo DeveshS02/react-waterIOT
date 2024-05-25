@@ -32,7 +32,7 @@ const Dropdown = ({ label, items, selectedOptions, toggleOption }) => {
         </span>
       </button>
       {isOpen && (
-        <ul className="z-6 absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg">
+        <ul className="z-20 absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg">
           {items.map((item, index) => (
             <li key={index}>
               <div className={`flex items-center cursor-pointer p-2 hover:bg-gray-200 ${selectedOptions.includes(index + 1) ? 'bg-gray-200' : ''}`} onClick={() => toggleOption(index + 1)}>

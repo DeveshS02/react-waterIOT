@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import image from '../images/logo.png';
+import image from '../images/iiit-new.png';
 import Dropdown from './Dropdown';
 
 const Navbar = ({ dropdownLabel, options, selectedOptions, toggleOption }) => {
@@ -10,8 +10,7 @@ const Navbar = ({ dropdownLabel, options, selectedOptions, toggleOption }) => {
   return (
     <div className="z-20 w-screen h-fit fixed inset-0 mt-2">
       <nav
-        style={{ backgroundColor: '#123462' }}
-        className={`text-white w-[98%] m-auto shadow-lg ${isMenuOpen ? 'rounded' : 'rounded-full'}`}
+        className={`navbar-glassmorphism nav-text w-[98%] m-auto shadow-lg ${isMenuOpen ? 'rounded' : 'rounded-full'}`}
       >
         <div className="container py-3 flex justify-between items-center">
           <div className="pl-10 flex items-center">
@@ -39,7 +38,7 @@ const Navbar = ({ dropdownLabel, options, selectedOptions, toggleOption }) => {
               </svg>
             </button>
           </div>
-          <div className="hidden md:flex items-center space-x-14 mr-7">
+          <div className="hidden md:flex items-center space-x-16 mr-7 text-lg">
             <a href="https://www.iiit.ac.in/" className="hover:text-blue-300">IIIT</a>
             <a href="https://www.iiit.ac.in/" className="hover:text-blue-300">SPCRC</a>
             <a href="#" className="hover:text-blue-300" data-toggle="modal" data-target="#nodeStatusPanel">Status of Node</a>

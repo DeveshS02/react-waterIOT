@@ -15,12 +15,12 @@ import icon_tanker_inactive from '../images/not_watertank.png';
 import icon_waternode_digital from '../images/sheni-new.png';
 import icon_waternode_digital_inactive from '../images/not-sheni-new.png';
 
-const MapComponent = ({ selectedOptions }) => {
+const MapComponent = ({ selectedOptions, setIsNavbarVisible }) => {
   const [nodes, setNodes] = useState({ tank: [], borewell: [], water: [] });
   const [data, setData] = useState({ tank: [], borewell: [], water: [] });
   const [latestData, setLatestData] = useState({ tank: [], borewell: [], water: [] });
 
-  const [selectedNode, setSelectedNode] = useState({ data: null, type: null, attributes: [], isAnalog: false });
+  const [selectedNode, setSelectedNode] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null});
   const [loading, setLoading] = useState(true);
 
   const fetchNodesData = useCallback(async () => {
@@ -38,6 +38,7 @@ const MapComponent = ({ selectedOptions }) => {
       setLoading(false);
     }
   }, []);
+
 
   const fetchData = useCallback(async () => {
     try {
@@ -100,20 +101,26 @@ const MapComponent = ({ selectedOptions }) => {
         data: nodeData,
         type: nodeType,
         attributes: attributes,
-        isAnalog: isAnalog
+        isAnalog: isAnalog,
+        name: nodeName
       });
     } else {
       setSelectedNode({
         data: nodeData,
         type: nodeType,
         attributes: Object.keys(nodeData[0]).filter(key => key !== 'created_at'),
-        isAnalog: false
+        isAnalog: false,
+        name: nodeName
       });
     }
+    setIsNavbarVisible(false);  // Hide Navbar when node is clicked
   };
   
 
-  const closeModal = () => setSelectedNode({ data: null, type: null, attributes: [], isAnalog: false });
+  const handleModalClose = () => {
+    setSelectedNode({ data: null, type: null, attributes: [], isAnalog: false, name: null });
+    setIsNavbarVisible(true);  // Show Navbar when modal is closed
+  };
 
   const NodeMarker = ({ node, icon, icon_inactive, data, nodeType }) => {
     const coordinates = Array.isArray(node.coordinates) ? node.coordinates : [node.coordinates.lat, node.coordinates.lng];
@@ -169,15 +176,17 @@ const MapComponent = ({ selectedOptions }) => {
       )}
 
       {selectedNode.data && (
-        <Modal onClose={closeModal}>
-          <NodeGraph data={selectedNode.data} attributes={selectedNode.attributes} nodeType={selectedNode.type} />
+        <Modal onClose={handleModalClose}>
+          <NodeGraph 
+            data={selectedNode.data} 
+            attributes={selectedNode.attributes} 
+            nodeType={selectedNode.type} 
+            allData={data} 
+            nodeName={selectedNode.name} />
         </Modal>
       )}
-
-
-
-
-    </div>
+      
+      </div>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import IndexButton from './components/IndexButton';
 import IndexPanel from './components/IndexPanel';
-import Map from './components/Map';
+import MapComponent from './components/Map';  // Ensure the import is correct
 import waterTankImage from './images/water_tank.png';
 import prawahImage from './images/water-meter-new.png';
 import shenitechImage from './images/sheni-new.png';
@@ -16,12 +16,13 @@ const options = [
   { id: 3, label: 'Shenitech Water Meter', image: shenitechImage },
   { id: 4, label: 'Sump', image: sumpImage },
   { id: 5, label: 'Bore Well', image: boreWellImage },
-  {id:6, label:'Pipeline', image: pipelineImage }
+  { id: 6, label: 'Pipeline', image: pipelineImage }
 ];
 
 const App = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true); 
 
   const toggleOption = (id) => {
     setSelectedOptions((prevSelected) => {
@@ -50,14 +51,19 @@ const App = () => {
 
   return (
     <div>
-      <Navbar 
-      dropdownLabel={getDropdownLabel()} 
-      options={options} 
-      selectedOptions={selectedOptions} 
-      toggleOption={toggleOption} 
-      />
+      {isNavbarVisible && (
+        <Navbar 
+          dropdownLabel={getDropdownLabel()} 
+          options={options} 
+          selectedOptions={selectedOptions} 
+          toggleOption={toggleOption} 
+        />
+      )}
       
-      <Map selectedOptions={selectedOptions}/>
+      <MapComponent 
+        selectedOptions={selectedOptions}
+        setIsNavbarVisible={setIsNavbarVisible} 
+      />
       
       <div className="fixed bottom-4 left-4 p-2 z-50">
         {!isOpen && <IndexButton handleButtonClick={handleButtonClick} />}

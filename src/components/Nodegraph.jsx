@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
+import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome styles
 
-const NodeGraph = ({ data, attributes, nodeType }) => {
+const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
   const hasMultipleAttributes = attributes.length > 1;
   const [viewMode, setViewMode] = useState(hasMultipleAttributes ? 'all' : 'single');
   const [selectedAttribute, setSelectedAttribute] = useState(attributes[0]);
+  const [selectedNodes, setSelectedNodes] = useState([nodeName]);
+  const nodeNames = Object.keys(allData[nodeType]);
 
   useEffect(() => {
     if (viewMode === 'all') {
@@ -24,7 +27,17 @@ const NodeGraph = ({ data, attributes, nodeType }) => {
     return color;
   };
 
-  const chartData = (attr) => ({
+  const chartDataSingle = () => ({
+    labels: data.map(entry => new Date(entry.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
+    datasets: selectedNodes.map(node => ({
+      label: node,
+      data: allData[nodeType][node].map(entry => entry[selectedAttribute]),
+      borderColor: getRandomColor(),
+      fill: false
+    }))
+  });
+
+  const chartDataAll = (attr) => ({
     labels: data.map(entry => new Date(entry.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
     datasets: [{
       label: attr,
@@ -40,7 +53,7 @@ const NodeGraph = ({ data, attributes, nodeType }) => {
     plugins: {
       title: {
         display: true,
-        text: `${nodeType} - ${attr}`,
+        text: `${nodeName} : ${attr}`,
         color: '#97266d',
         font: {
           size: 25 // Increase font size for title
@@ -98,29 +111,69 @@ const NodeGraph = ({ data, attributes, nodeType }) => {
     }
   });
 
+  const handleNodeSelection = (event) => {
+    const selectedNode = event.target.value;
+    if (!selectedNodes.includes(selectedNode)) {
+      setSelectedNodes([...selectedNodes, selectedNode]);
+    }
+  };
+
+  const handleNodeRemoval = (node) => {
+    if (node !== nodeName) {
+      setSelectedNodes(selectedNodes.filter(n => n !== node));
+    }
+  };
+
   return (
     <div className="graph-container">
       {hasMultipleAttributes && (
         <div className="controls">
-           {viewMode === 'single' && (
-            <button onClick={() => setViewMode('all')} className="btn btn-primary">
-              View All
-            </button>
+          {viewMode === 'single' && (
+            <>
+              <button onClick={() => setViewMode('all')} className="btn btn-primary">
+                View All
+              </button>
+              <select
+                className="transparent-dropdown"
+                value={selectedAttribute}
+                onChange={e => setSelectedAttribute(e.target.value)}
+              >
+                {attributes.map(attr => (
+                  <option key={attr} value={attr}>{attr}</option>
+                ))}
+              </select>
+              <button className="btn btn-secondary" onClick={() => setViewMode('compare')}>
+                Compare Nodes
+              </button>
+            </>
           )}
           {viewMode === 'all' && (
             <button onClick={() => setViewMode('single')} className="btn btn-primary">
               View Single
             </button>
           )}
-          {viewMode === 'single' && (
-            <select
-              value={selectedAttribute}
-              onChange={e => setSelectedAttribute(e.target.value)}
-            >
-              {attributes.map(attr => (
-                <option key={attr} value={attr}>{attr}</option>
-              ))}
-            </select>
+          {viewMode === 'compare' && (
+            <>
+              <select className="transparent-dropdown" onChange={handleNodeSelection}>
+                {nodeNames.map(node => (
+                  <option key={node} value={node}>{node}</option>
+                ))}
+              </select>
+              <select
+                className="transparent-dropdown"
+                value={selectedAttribute}
+                onChange={e => setSelectedAttribute(e.target.value)}
+              >
+                {attributes.map(attr => (
+                  <option key={attr} value={attr}>{attr}</option>
+                ))}
+              </select>
+              <button className="btn btn-secondary" onClick={() => {setViewMode('single')
+                setSelectedNodes([nodeName])
+              }}>
+                Exit Comparison
+              </button>
+            </>
           )}
         </div>
       )}
@@ -128,12 +181,28 @@ const NodeGraph = ({ data, attributes, nodeType }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {attributes.map(attr => (
             <div key={attr} className="graph-item">
-              <Line data={chartData(attr)} options={chartOptions(attr)} height={400} />
+              <Line data={chartDataAll(attr)} options={chartOptions(attr)} height={400} />
             </div>
           ))}
         </div>
       ) : (
-        <Line data={chartData(selectedAttribute)} options={chartOptions(selectedAttribute)} height={400} />
+        <Line data={chartDataSingle()} options={chartOptions(selectedAttribute)} height={400} />
+      )}
+      {viewMode === 'compare' && (
+        <div className="selected-nodes">
+          <h3>Selected Nodes:</h3>
+          <ul>
+            {selectedNodes.map(node => (
+              <li key={node} className="node-item">
+                {node} {node !== nodeName && (
+                  <button onClick={() => handleNodeRemoval(node)} className="remove-btn">
+                    <i className="fas fa-times"></i>
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );

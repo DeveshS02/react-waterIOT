@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.bg-custom{
-    background-color: #123462
-}
-
 .custom-button{
     color: rgb(63, 64, 61);
     transition: transform 0.5s, box-shadow 0.3s;
@@ -17,8 +13,6 @@
   }
   
 .custom-button-checked {
-    /* box-shadow: inset 0 5px 1px rgba(252, 251, 251, 0.15), 0 5px 5px rgba(0, 0, 0, 0.5), 0 15px 25px rgba(0, 0, 0, 0.25);
-     */
      border-radius: 10px;
     box-shadow:  inset 0 -7px 10px rgba(255, 255, 255, 0.1), 
      0 2px 10px rgba(0, 0, 0, 0.2);
@@ -26,45 +20,44 @@
     background-color: rgb(251, 251, 247);
   }
 
+  /* modal css */
+
   .modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    height: 90%;
-    width: 90%;
-    overflow-y: auto;
-    background: rgba(24, 9, 87, 0.15);  /* Dark background */
-    border-radius: 10px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 4px 8px rgba(28, 79, 93, 0.1);
-    padding: 20px;
-    z-index: 1000;
-    color: purple;  /* White text */
-  }
-  
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px); */
-    
-    z-index: 999;
-  }
-  
-  .modal-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    color: white;  /* White close button */
-    cursor: pointer;
-  }
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 90vh;
+  width: 90vw;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 1rem;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 0.25rem 0.5rem rgba(28, 79, 93, 0.1);
+  padding: 2rem;
+  z-index: 1000;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #97266d;
+  cursor: pointer;
+}
+
   
   /* styles.css */
 
@@ -83,19 +76,198 @@
   100% { transform: rotate(360deg); }
 }
 
+/*css for views in graph */
+
 .graph-container {
   position: relative;
-  height: 500px; /* Adjust as needed */
+  height: 60vh;
 }
 
 .controls {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
 }
 
-.controls button, .controls select {
-  margin-right: 10px;
-  padding: 5px 10px;
-  font-size: 14px;
+.controls button,
+.controls select {
+  font-size: 1rem;
+}
+
+.controls button{
+  background-color: #a42475e4;
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.02rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.controls button:hover {
+  background-color: #97266d;
+}
+.transparent-dropdown {
+  background-color: transparent;
+  border: 0.1rem solid #97266d;
+  border-radius: 1rem;
+  color: #97266d;
+  padding: 0.5rem;
+}
+
+.transparent-dropdown option {
+  background-color: #fff;
+  color: #000;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: #97266d;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+.remove-btn:hover {
+  color: red;
+}
+
+.selected-nodes ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.selected-nodes li {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+h3 {
+  color: #97266d;
+  font-size: 1.4rem;
+  margin-bottom: 2rem;
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .controls button,
+  .controls select {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .controls .transparent-dropdown:first-of-type {
+    align-self: flex-start;
+  }
+
+  .controls .transparent-dropdown:last-of-type {
+    align-self: flex-end;
+  }
+
+  .controls .btn-secondary {
+    align-self: center;
+    margin-bottom: 0;
+  }
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .controls button,
+  .controls select {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .controls .transparent-dropdown:first-of-type {
+    align-self: flex-start;
+  }
+
+  .controls .transparent-dropdown:last-of-type {
+    align-self: flex-end;
+  }
+
+  .controls .btn-secondary {
+    align-self: center;
+    margin-bottom: 0;
+  }
+}
+
+
+
+/*css for glassy effect in navbar */
+.navbar-glassmorphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  position: relative;
+  overflow: visible;
+}
+
+.navbar-glassmorphism::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(130deg, rgba(10, 184, 219, 0.4), rgba(34, 59, 185, 0.371), rgba(189, 196, 208, 0.4));
+  background-size: 200% 200%;
+  z-index: -1;
+  animation: gradientAnimation 10s linear infinite alternate-reverse; 
+  pointer-events: none; 
+  border-radius: inherit;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.navbar-glassmorphism .hover\:text-blue-300:hover {
+  color: #3b82f6;
+}
+
+.navbar-glassmorphism .hover\:bg-blue-700:hover {
+  background-color: #1e40af;
+}
+
+.nav-text{
+  color: #274068;
+}
+
+/*css for custom scrollbar in graph */
+
+.nodeGraph::-webkit-scrollbar {
+  width: 8px; 
+}
+
+.nodeGraph::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+.nodeGraph::-webkit-scrollbar-thumb {
+  background-color: #97266e92;
+  border-radius: 8px;
+  border: 3px solid transparent; 
+}
+
+.nodeGraph::-webkit-scrollbar-thumb:hover {
+  background: #750048; 
 }
