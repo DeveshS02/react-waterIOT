@@ -47,13 +47,13 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
     }]
   });
 
-  const chartOptions = (attr) => ({
+  const chartOptions = (title) => ({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       title: {
         display: true,
-        text: `${nodeName} : ${attr}`,
+        text: title,
         color: '#97266d',
         font: {
           size: 25 // Increase font size for title
@@ -168,8 +168,9 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
                   <option key={attr} value={attr}>{attr}</option>
                 ))}
               </select>
-              <button className="btn btn-secondary" onClick={() => {setViewMode('single')
-                setSelectedNodes([nodeName])
+              <button className="btn btn-secondary" onClick={() => {
+                setViewMode('single');
+                setSelectedNodes([nodeName]);
               }}>
                 Exit Comparison
               </button>
@@ -178,30 +179,40 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
         </div>
       )}
       {viewMode === 'all' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {attributes.map(attr => (
-            <div key={attr} className="graph-item">
-              <Line data={chartDataAll(attr)} options={chartOptions(attr)} height={400} />
-            </div>
-          ))}
-        </div>
+        <>
+          <h3 className="centered-title">{nodeName}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {attributes.map(attr => (
+              <div key={attr} className="graph-item">
+                <Line data={chartDataAll(attr)} options={chartOptions(attr)} height={400} />
+              </div>
+            ))}
+          </div>
+        </>
       ) : (
-        <Line data={chartDataSingle()} options={chartOptions(selectedAttribute)} height={400} />
+        viewMode === 'single' && (
+          <Line data={chartDataSingle()} options={chartOptions(`${nodeName} : ${selectedAttribute}`)} height={400} />
+        )
       )}
       {viewMode === 'compare' && (
-        <div className="selected-nodes">
-          <h3>Selected Nodes:</h3>
-          <ul>
-            {selectedNodes.map(node => (
-              <li key={node} className="node-item">
-                {node} {node !== nodeName && (
-                  <button onClick={() => handleNodeRemoval(node)} className="remove-btn">
-                    <i className="fas fa-times"></i>
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
+        <div className="compare-view-container flex h-full">
+          <div className='grow'>
+            <Line data={chartDataSingle()} options={chartOptions(`${nodeName} : ${selectedAttribute}`)} height={400} />
+          </div>
+          <div className="selected-nodes">
+            <h3>Selected Nodes:</h3>
+            <ul>
+              {selectedNodes.map(node => (
+                <li key={node} className="node-item">
+                  {node} {node !== nodeName && (
+                    <button onClick={() => handleNodeRemoval(node)} className="remove-btn">
+                      <i className="fas fa-times"></i>
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </div>

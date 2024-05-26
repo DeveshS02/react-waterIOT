@@ -95,12 +95,12 @@
   font-size: 1rem;
 }
 
-.controls button{
+.controls button {
   background-color: #a42475e4;
   color: #fff;
   border: none;
   border-radius: 0.7rem;
-  padding: 0.02rem 1rem;
+  padding: 0.5rem 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -108,6 +108,7 @@
 .controls button:hover {
   background-color: #97266d;
 }
+
 .transparent-dropdown {
   background-color: transparent;
   border: 0.1rem solid #97266d;
@@ -133,30 +134,58 @@
   color: red;
 }
 
+.selected-nodes {
+  width: 20%;
+  max-width: 200px;
+  min-width: 150px;
+  height: 100%;
+  overflow-y: auto;
+  border-left: 0.08rem solid #97266d;
+  padding-left: 0.7rem;
+  margin-top: 0.55rem;
+}
+
 .selected-nodes ul {
   list-style-type: none;
   padding: 0;
+  word-wrap: break-word;
 }
 
 .selected-nodes li {
   display: flex;
   align-items: center;
   margin: 0.5rem 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-h3 {
+.selected-nodes h3 {
+  color: #97266d;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.centered-title {
+  text-align: center;
   color: #97266d;
   font-size: 1.4rem;
   margin-bottom: 2rem;
 }
 
+.compare{
+  height: 100%;
+  display: flex;
+}
+
 /* Media query for mobile devices */
 @media (max-width: 768px) {
   .controls {
     flex-direction: column;
     align-items: center;
   }
-
+  .compare{
+    flex-direction: column;
+  }
   .controls button,
   .controls select {
     margin-right: 0;
@@ -175,35 +204,18 @@ h3 {
     align-self: center;
     margin-bottom: 0;
   }
-}
 
-/* Media query for mobile devices */
-@media (max-width: 768px) {
-  .controls {
+  .selected-nodes {
+    width: 100%;
+    max-width: none;
+    border-left: none;
+    padding-left: 0;
+  }
+  .compare-view-container {
     flex-direction: column;
-    align-items: center;
-  }
-
-  .controls button,
-  .controls select {
-    margin-right: 0;
-    margin-bottom: 1rem;
-  }
-
-  .controls .transparent-dropdown:first-of-type {
-    align-self: flex-start;
-  }
-
-  .controls .transparent-dropdown:last-of-type {
-    align-self: flex-end;
-  }
-
-  .controls .btn-secondary {
-    align-self: center;
-    margin-bottom: 0;
+    height: auto;
   }
 }
-
 
 
 /*css for glassy effect in navbar */
