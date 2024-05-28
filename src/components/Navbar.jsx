@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import image from '../images/iiit-new.png';
 import Dropdown from './Dropdown';
+import StatusNode from "./status_node";
 
 const Navbar = ({ dropdownLabel, options, selectedOptions, toggleOption }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+    const [showContainer, setShowContainer] = useState(false);
+  const handleButtonClick = () => {
+    setShowContainer(true);
+  };
+  const handleCloseButtonClick = () => {
+    setShowContainer(false);
+  };
   const dropdownItems = options.map(option => option.label);
 
   return (
@@ -14,7 +21,9 @@ const Navbar = ({ dropdownLabel, options, selectedOptions, toggleOption }) => {
       >
         <div className="container py-3 flex justify-between items-center">
           <div className="pl-10 flex items-center">
+            <a href="/">
             <img src={image} alt="IIIT Logo" className="h-10 mr-8" />
+            </a>
             <h1 className="ml-1 text-3xl tracking-wide font-sans">WaterIoT</h1>
           </div>
           <div className="mr-5 md:hidden">
@@ -40,8 +49,10 @@ const Navbar = ({ dropdownLabel, options, selectedOptions, toggleOption }) => {
           </div>
           <div className="hidden md:flex items-center space-x-16 mr-7 text-lg">
             <a href="https://www.iiit.ac.in/" className="hover:text-blue-300">IIIT</a>
-            <a href="https://www.iiit.ac.in/" className="hover:text-blue-300">SPCRC</a>
-            <a href="#" className="hover:text-blue-300" data-toggle="modal" data-target="#nodeStatusPanel">Status of Node</a>
+            <a href="https://spcrc.iiit.ac.in/" className="hover:text-blue-300">SPCRC</a>
+            <button onClick={handleButtonClick} className="hover:text-blue-300">Status of Node</button>
+            {showContainer && <StatusNode onClose={handleCloseButtonClick} />}
+
             <div className="mr-4">
               <Dropdown label={dropdownLabel} items={dropdownItems} selectedOptions={selectedOptions} toggleOption={toggleOption} />
             </div>
@@ -62,4 +73,4 @@ const Navbar = ({ dropdownLabel, options, selectedOptions, toggleOption }) => {
   );
 };
 
-export default Navbar;
+export default Navbar;

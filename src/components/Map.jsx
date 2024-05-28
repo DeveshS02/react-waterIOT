@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Tooltip, Polyline } from 'react-leaflet';
+import React, { useState, useEffect, useCallback } from 'react';
+import { MapContainer, TileLayer, Marker, Tooltip, Polyline, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import createCustomIcon from '../utils/createCustomIcon';
 import fetch_data from '../utils/fetch_data';
@@ -15,13 +15,13 @@ import icon_tanker_inactive from '../images/not_watertank.png';
 import icon_waternode_digital from '../images/sheni-new.png';
 import icon_waternode_digital_inactive from '../images/not-sheni-new.png';
 
-const MapComponent = ({ selectedOptions, setIsNavbarVisible }) => {
+const MapComponent = ({ selectedOptions, setIsNavbarVisible, location }) => {
   const [nodes, setNodes] = useState({ tank: [], borewell: [], water: [] });
   const [data, setData] = useState({ tank: [], borewell: [], water: [] });
   const [latestData, setLatestData] = useState({ tank: [], borewell: [], water: [] });
-
-  const [selectedNode, setSelectedNode] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null});
+  const [selectedNode, setSelectedNode] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null });
   const [loading, setLoading] = useState(true);
+  const [bounds, setBounds] = useState(null); // Default bounds
 
   const fetchNodesData = useCallback(async () => {
     setLoading(true);
@@ -31,14 +31,31 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible }) => {
         fetch_data('https://api-gateway-green.vercel.app/water/borewellnodesC'),
         fetch_data('https://api-gateway-green.vercel.app/water/waterC')
       ]);
-      setNodes({ tank: tankNodes, borewell: borewellNodes, water: waterNodes });
+
+      const filterNodesByLocation = (nodes) => nodes.filter(node => node.location === location);
+
+      const filteredTankNodes = filterNodesByLocation(tankNodes);
+      const filteredBorewellNodes = filterNodesByLocation(borewellNodes);
+      const filteredWaterNodes = filterNodesByLocation(waterNodes);
+      setNodes({ tank: filteredTankNodes, borewell: filteredBorewellNodes, water: filteredWaterNodes });
+
+      // Calculate extreme coordinates for setting bounds
+      const allNodes = [...filteredTankNodes, ...filteredBorewellNodes, ...filteredWaterNodes];
+      if (allNodes.length > 0) {
+        const latitudes = allNodes.map(node => Array.isArray(node.coordinates) ? node.coordinates[0] : node.coordinates.lat);
+        const longitudes = allNodes.map(node => Array.isArray(node.coordinates) ? node.coordinates[1] : node.coordinates.lng);
+        const maxLat = Math.max(...latitudes);
+        const minLat = Math.min(...latitudes);
+        const maxLng = Math.max(...longitudes);
+        const minLng = Math.min(...longitudes);
+        setBounds([[minLat, minLng], [maxLat, maxLng]]);
+      }
     } catch (error) {
       console.error("Error fetching nodes: ", error);
     } finally {
       setLoading(false);
     }
   }, []);
-
 
   const fetchData = useCallback(async () => {
     try {
@@ -47,7 +64,7 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible }) => {
         fetch_data('https://api-gateway-green.vercel.app/water/borewellgraphC'),
         fetch_data('https://api-gateway-green.vercel.app/water/latestwaterC')
       ]);
-      setData({ tank: tankData, borewell: borewellData, water: waterData });
+      setData({ tank: renameKeys(tankData), borewell: renameKeys(borewellData), water: renameKeys(waterData) });
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -65,6 +82,37 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible }) => {
       water: extractData(data.water)
     });
   }, [data]);
+
+  const renameKeys = (data) => {
+    const keyMapping = {
+      created_at: "Last_Updated",
+      waterlevel: "Water Level", //cm
+      temperature: "Temperature", //celcius
+      totalvolume: "Total Volume", //m3
+      flowrate: "Flow Rate", //kL/hr
+      pressure: "Pressure", //centibar
+      pressurevoltage: "Pressure Voltage", //centibar
+      totalflow: "Total Flow" //Litres
+    };
+  
+    for (const outerKey in data) {
+      if (Object.hasOwnProperty.call(data, outerKey)) {
+        const innerObjects = data[outerKey];
+        for (const obj of innerObjects) {
+          for (const key in obj) {
+            if (Object.hasOwnProperty.call(obj, key) && keyMapping[key]) {
+              // If the key exists in the mapping, rename it
+              obj[keyMapping[key]] = obj[key];
+              delete obj[key]; // Delete the old key
+            }
+          }
+        }
+      }
+    }
+  
+    return data;
+  };
+  
 
   const iconConfig = {
     tank: [createCustomIcon(icon_tanker), createCustomIcon(icon_tanker_inactive)],
@@ -94,8 +142,8 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible }) => {
       const isAnalog = node?.parameters.includes('isanalog');
       
       const attributes = !isAnalog
-        ? Object.keys(nodeData[0]).filter(key => key !== 'created_at')
-        : Object.keys(nodeData[0]).filter(key => key !== 'created_at' && key !== 'pressure' && key !== 'pressurevoltage');
+        ? Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated')
+        : Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated' && key !== 'pressure' && key !== 'pressurevoltage');
       
       setSelectedNode({
         data: nodeData,
@@ -108,23 +156,35 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible }) => {
       setSelectedNode({
         data: nodeData,
         type: nodeType,
-        attributes: Object.keys(nodeData[0]).filter(key => key !== 'created_at'),
+        attributes: Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated'),
         isAnalog: false,
         name: nodeName
       });
     }
     setIsNavbarVisible(false);  // Hide Navbar when node is clicked
   };
-  
 
   const handleModalClose = () => {
     setSelectedNode({ data: null, type: null, attributes: [], isAnalog: false, name: null });
     setIsNavbarVisible(true);  // Show Navbar when modal is closed
   };
 
+  const getUnit = (key) => {
+    const unitMapping = {
+      "Water Level": "cm",
+      "Temperature": "°C",
+      "Total Volume": "m³",
+      "Flow Rate": "kL/hr",
+      "Pressure": "cbar",
+      "Pressure Voltage": "cbar",
+      "Total Flow": "Litres"
+    };
+    return unitMapping[key] || "";
+  };
+
   const NodeMarker = ({ node, icon, icon_inactive, data, nodeType }) => {
     const coordinates = Array.isArray(node.coordinates) ? node.coordinates : [node.coordinates.lat, node.coordinates.lng];
-    const isActiveNode = isActive(data?.created_at);
+    const isActiveNode = isActive(data?.Last_Updated);
     return (
       <Marker
         position={coordinates}
@@ -136,8 +196,8 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible }) => {
             <strong className="font-bold text-md italic">{node.name}</strong><br />
             {data ? Object.entries(data).map(([key, value]) => (
               <div key={key} className="text-sm">
-                <span>{`${key.charAt(0).toUpperCase()}${key.slice(1)}`}: </span>
-                <span>{value}</span>
+                <span>{key}: </span>
+                <span>{value} {getUnit(key)}</span> {/* Add units */}
               </div>
             )) : (
               <span className="text-sm">No data available</span>
@@ -155,11 +215,8 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible }) => {
       ) : (
         <MapContainer
           className="w-full h-full z-10"
-          center={[17.445678, 78.3477]}
-          zoom={17}
-          maxZoom={19}
-          minZoom={17}
-          maxBounds={[[17.439458106, 78.33680439], [17.4504764568, 78.35945215954]]}
+          bounds={bounds} // Set bounds dynamically
+          zoomControl={false}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
           {developWalls()}
@@ -185,8 +242,7 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible }) => {
             nodeName={selectedNode.name} />
         </Modal>
       )}
-      
-      </div>
+    </div>
   );
 };
 

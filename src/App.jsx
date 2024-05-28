@@ -63,10 +63,12 @@ const App = () => {
       <MapComponent 
         selectedOptions={selectedOptions}
         setIsNavbarVisible={setIsNavbarVisible} 
+        location="IIITH"
       />
       
       <div className="fixed bottom-4 left-4 p-2 z-50">
-        {!isOpen && <IndexButton handleButtonClick={handleButtonClick} />}
+          {!isOpen && <IndexButton handleButtonClick={handleButtonClick} />}
+        <div className={isOpen ? 'blockk' : 'hiddenn'}>
         {isOpen && (
           <IndexPanel
             isOpen={isOpen}
@@ -76,7 +78,8 @@ const App = () => {
             toggleOption={toggleOption}
           />
         )}
-      </div>
+        </div>
+      </div>
     </div>
   );
 };

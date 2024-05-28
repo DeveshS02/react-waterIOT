@@ -9,15 +9,15 @@ const IndexPanel = ({
 }) => {
   return (
     <div
-      style={{ width: "338px", height: "270px" }}
-      className="ring-2 ring-yellow-500 mt-2 bg-white p-4 rounded-lg shadow-lg"
+      style={{ width: "353px", height: "280px" }}
+      className="indexpanel mt-2 mb-1 p-3 rounded-lg"
     >
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center mb-3">
         <h1></h1>
-        <h2 className="text-xl text-gray-800 font-semibold">INDEX</h2>
+        <h2 className="text-xl text-cyan-950 font-bold">Index</h2>
         <button
           onClick={handleClose}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-cyan-950 hover:text-cyan-800"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +35,7 @@ const IndexPanel = ({
           </svg>
         </button>
       </div>
-      <div className="mt-3 grid grid-cols-2 gap-2">
+      <div className="mt-2 mx-2 pb-1 grid grid-cols-2 gap-3">
         {options.map((option) => (
           <div
             key={option.id}
@@ -72,4 +72,4 @@ const IndexPanel = ({
   );
 };
 
-export default IndexPanel;
+export default IndexPanel;
