@@ -87,29 +87,77 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
+  align-items: center;
   width: 97%;
   margin: auto;
 }
 
-.controls button,
-.controls select {
-  font-size: 1rem;
+.tabs {
+  background-color: #D0D8A2;
+  padding-top: 0.3rem;
+  border-radius: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20vw;
 }
 
-.controls button {
-  background-color: #a42475e4;
-  color: #fff;
-  border: none;
-  border-radius: 0.7rem;
-  padding: 0.5rem 1rem;
+.tabs h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: auto;
+}
+
+.tab-buttons {
+  margin-top: 0.5rem;
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+
+.tab {
+  flex: 1;
+  font-size: 0.95rem;
+  padding: 0.3rem;
+  border: 0.1rem solid black;
+  border-radius: 3rem;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  background-color: white;
 }
 
-.controls button:hover {
-  background-color: #97266d;
+.tab.single {
+  left: 3%;
+}
+
+.tab.multi {
+  right: 3%;
+}
+
+.tab.active {
+  z-index: 2;
+}
+
+.tab.single.active {
+  background-color: #FFBD59;
+  z-index: 3;
+}
+
+.tab.multi.active {
+  background-color: #96E0BC;
+  z-index: 3;
+}
+
+.tab:hover {
   transform: scale(1.05);
+}
+
+.right-controls {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .transparent-dropdown {
@@ -123,6 +171,38 @@
 .transparent-dropdown option {
   background-color: #fff;
   color: #000;
+}
+
+.btn {
+  background-color: #D6EDD0;
+  color: #000;
+  border: 0.1rem solid black;
+  border-radius: 3rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #97266d;
+  transform: scale(1.05);
+}
+
+.attribute-dropdown-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.compare-dropdown-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.controls select {
+  font-size: 1rem;
 }
 
 .remove-btn {
@@ -159,20 +239,39 @@
   background-color: rgba(193, 189, 189, 0.558);
 }
 
+.node-color-line {
+  min-width: 25%;
+  height: 5px;
+  margin-top: 5px;
+}
+
 .compare-view-container {
   display: flex;
   height: 100%;
 }
 
 .centered-title {
-  margin-top: 1rem;
+  margin-top: 0.4rem;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 600;
+}
+
+.compare{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 @media (max-width: 768px) {
   .controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  .tabs {
+    flex-direction: column;
+  }
+  .right-controls {
     flex-direction: column;
     align-items: center;
   }
@@ -212,6 +311,15 @@
   .compare-view-container {
     flex-direction: column;
     height: auto;
+  }
+
+  .attribute-dropdown-container,
+  .compare-dropdown-container {
+    justify-content: center;
+  }
+  .exit-comparison-btn {
+    position: static;
+    margin-top: 1rem;
   }
 }
 

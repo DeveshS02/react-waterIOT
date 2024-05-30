@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
-import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome styles
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
-const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
+const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigital }) => {
   const hasMultipleAttributes = attributes.length > 1;
   const [viewMode, setViewMode] = useState(hasMultipleAttributes ? 'all' : 'single');
   const [selectedAttribute, setSelectedAttribute] = useState(attributes[0]);
@@ -12,15 +12,24 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
 
   const getRandomColor = () => `#${Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0')}`;
 
-  const chartDataSingle = useMemo(() => ({
-    labels: data.map(entry => new Date(entry.Last_Updated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
-    datasets: selectedNodes.map(node => ({
-      label: node,
-      data: allData[nodeType][node].map(entry => entry[selectedAttribute]),
-      borderColor: getRandomColor(),
-      fill: false
-    }))
-  }), [data, selectedNodes, selectedAttribute, allData, nodeType]);
+  const chartDataSingle = useMemo(() => {
+    const colors = {};
+    const datasets = selectedNodes.map(node => {
+      const color = getRandomColor();
+      colors[node] = color;
+      return {
+        label: node,
+        data: allData[nodeType][node].map(entry => entry[selectedAttribute]),
+        borderColor: color,
+        fill: false
+      };
+    });
+    return {
+      labels: data.map(entry => new Date(entry.Last_Updated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
+      datasets,
+      colors
+    };
+  }, [data, selectedNodes, selectedAttribute, allData, nodeType]);
 
   const chartDataAll = useMemo(() => (attr) => ({
     labels: data.map(entry => new Date(entry.Last_Updated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
@@ -41,11 +50,11 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
         text: title,
         color: '#97266d',
         font: {
-          size: `${20}vw`
+          size: `${18}vw`
         },
         padding: {
           top: 10,
-          bottom: 30
+          bottom: 10
         }
       },
       tooltip: {
@@ -112,8 +121,8 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
   const getUnit = (key) => {
     const unitMapping = {
       "Water Level": "cm",
-      "Temperature": "celsius",
-      "Total Volume": "m^3",
+      "Temperature": "°C",
+      "Total Volume": "m³",
       "Flow Rate": "kL/hr",
       "Pressure": "cbar",
       "Pressure Voltage": "cbar",
@@ -122,35 +131,113 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
     return unitMapping[key] || "";
   };
 
-  const ControlButtons = ({ viewMode, setViewMode, hasMultipleAttributes, selectedAttribute, setSelectedAttribute, attributes }) => {
+  const ControlButtons = ({
+    viewMode,
+    setViewMode,
+    hasMultipleAttributes,
+    selectedAttribute,
+    setSelectedAttribute,
+    attributes,
+    handleNodeSelection,
+    nodeNames,
+    nodeName,
+    setSelectedNodes
+  }) => {
     return (
       <div className="controls">
-        {viewMode === 'single' && hasMultipleAttributes && (
-          <>
-            <button onClick={() => setViewMode('all')} className="btn btn-primary">View All</button>
-            <select
-              className="transparent-dropdown"
-              value={selectedAttribute}
-              onChange={e => setSelectedAttribute(e.target.value)}
+        {viewMode !== 'compare' && (
+          <div className="tabs">
+            <h4>Graph Modes</h4>
+            <div className="tab-buttons">
+              <button
+                className={`tab single ${viewMode === 'single' ? 'active' : ''}`}
+                onClick={() => setViewMode('single')}
+              >
+                Single View
+              </button>
+              {hasMultipleAttributes && (
+                <button
+                  className={`tab multi ${viewMode === 'all' ? 'active' : ''}`}
+                  onClick={() => setViewMode('all')}
+                >
+                  Multi View
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+        <div className="right-controls">
+          {viewMode !== 'compare' && (
+            <button
+              className="btn btn-secondary"
+              onClick={() => setViewMode('compare')}
             >
-              {attributes.map(attr => (
-                <option key={attr} value={attr}>{attr}</option>
-              ))}
-            </select>
-            <button className="btn btn-secondary" onClick={() => setViewMode('compare')}>Compare Nodes</button>
-          </>
-        )}
-        {viewMode === 'all' && (
-          <button onClick={() => setViewMode('single')} className="btn btn-primary">View Single</button>
-        )}
-        {viewMode === 'compare' && (
-          <>
-            <div className="flex gap-4 drops">
-              <select className="transparent-dropdown" onChange={handleNodeSelection}>
-                {nodeNames.map(node => (
-                  <option key={node} value={node}>{node}</option>
-                ))}
-              </select>
+              Compare Nodes
+            </button>
+          )}
+          {viewMode === 'compare' && (
+            <>
+              <div className="flex gap-4 drops">
+                <select
+                  className="transparent-dropdown"
+                  onChange={handleNodeSelection}
+                >
+                  {nodeNames.map(node => (
+                    <option key={node} value={node}>
+                      {node}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                className="btn btn-secondary exit-comparison-btn"
+                onClick={() => {
+                  setViewMode('single');
+                  setSelectedNodes([nodeName]);
+                }}
+              >
+                Exit Comparison
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="graph-container">
+      <ControlButtons 
+        viewMode={viewMode} 
+        setViewMode={setViewMode} 
+        hasMultipleAttributes={hasMultipleAttributes} 
+        selectedAttribute={selectedAttribute} 
+        setSelectedAttribute={setSelectedAttribute} 
+        attributes={attributes} 
+        handleNodeSelection={handleNodeSelection}
+        nodeNames={nodeNames}
+        nodeName={nodeName}
+        setSelectedNodes={setSelectedNodes}
+      />
+      {(viewMode === 'single' || viewMode === 'all') && (
+        <>
+          <h3 className="centered-title">{nodeName}</h3>
+          <div className="centered-title">
+            {(() => {
+              switch (nodeType) {
+                case 'water':
+                  return `Water Node: ${analogOrDigital === 'analog' ? 'Prawah' : 'Shenitech'}`;
+                case 'borewell':
+                  return 'Borewell Node';
+                case 'tank':
+                  return 'Tank Node';
+                default:
+                  return nodeType;
+              }
+            })()}
+        </div>
+          {viewMode === 'single' && hasMultipleAttributes && (
+            <div className="attribute-dropdown-container">
               <select
                 className="transparent-dropdown"
                 value={selectedAttribute}
@@ -161,21 +248,8 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
                 ))}
               </select>
             </div>
-            <button className="btn btn-secondary" onClick={() => {
-              setViewMode('single');
-              setSelectedNodes([nodeName]);
-            }}>Exit Comparison</button>
-          </>
-        )}
-      </div>
-    );
-  };
-
-  return (
-    <div className="graph-container">
-      {hasMultipleAttributes && <ControlButtons viewMode={viewMode} setViewMode={setViewMode} hasMultipleAttributes={hasMultipleAttributes} selectedAttribute={selectedAttribute} setSelectedAttribute={setSelectedAttribute} attributes={attributes} />}
-      {(viewMode === 'single' || viewMode === 'all') && (
-        <h3 className="centered-title">{nodeName}</h3>
+          )}
+        </>
       )}
       {viewMode === 'all' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -201,7 +275,9 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
                 <ul>
                   {selectedNodes.map(node => (
                     <li key={node} className="node-item">
-                      {node} {node !== nodeName && (
+                      {node}
+                      <div className="node-color-line" style={{ backgroundColor: chartDataSingle.colors[node] }} />
+                      {node !== nodeName && (
                         <button onClick={() => handleNodeRemoval(node)} className="remove-btn">
                           <i className="fas fa-times"></i>
                         </button>
@@ -211,6 +287,31 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName }) => {
                 </ul>
               </div>
               <div className='grow'>
+                <h3 className="centered-title">
+                {(() => {
+                  switch (nodeType) {
+                    case 'water':
+                      return 'Water Node';
+                    case 'borewell':
+                      return 'Borewell Node';
+                    case 'tank':
+                      return 'Tank Node';
+                    default:
+                      return nodeType;
+                }
+              })()}
+                </h3>
+                <div className="compare-dropdown-container">
+                  <select
+                    className="transparent-dropdown"
+                    value={selectedAttribute}
+                    onChange={e => setSelectedAttribute(e.target.value)}
+                  >
+                    {attributes.map(attr => (
+                      <option key={attr} value={attr}>{attr}</option>
+                    ))}
+                  </select>
+                </div>
                 <Line
                   data={chartDataSingle}
                   options={chartOptions(selectedAttribute, getUnit(selectedAttribute))}

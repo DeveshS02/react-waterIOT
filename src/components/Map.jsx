@@ -14,7 +14,7 @@ import icon_waternode_digital from '../images/sheni-new.png';
 import icon_waternode_digital_inactive from '../images/not-sheni-new.png';
 
 const MapComponent = ({ selectedOptions, setIsNavbarVisible, nodes, latestData, data, bounds, loading }) => {
-  const [selectedNode, setSelectedNode] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null });
+  const [selectedNode, setSelectedNode] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
 
   const iconConfig = {
     tank: [createCustomIcon(icon_tanker), createCustomIcon(icon_tanker_inactive)],
@@ -42,6 +42,7 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible, nodes, latestData, 
     if (nodeType === 'water') {
       const node = nodes.water.find(node => node.name === nodeName);
       const isAnalog = node?.parameters.includes('isanalog');
+      const analogOrDigital = isAnalog ? 'analog' : 'digital';
       
       const attributes = !isAnalog
         ? Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated')
@@ -52,7 +53,8 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible, nodes, latestData, 
         type: nodeType,
         attributes: attributes,
         isAnalog: isAnalog,
-        name: nodeName
+        name: nodeName,
+        analogOrDigital: analogOrDigital
       });
     } else {
       setSelectedNode({
@@ -60,14 +62,15 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible, nodes, latestData, 
         type: nodeType,
         attributes: Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated'),
         isAnalog: false,
-        name: nodeName
+        name: nodeName,
+        analogOrDigital: null
       });
     }
     setIsNavbarVisible(false);  // Hide Navbar when node is clicked
   };
 
   const handleModalClose = () => {
-    setSelectedNode({ data: null, type: null, attributes: [], isAnalog: false, name: null });
+    setSelectedNode({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
     setIsNavbarVisible(true);  // Show Navbar when modal is closed
   };
 
@@ -140,6 +143,7 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible, nodes, latestData, 
             data={selectedNode.data} 
             attributes={selectedNode.attributes} 
             nodeType={selectedNode.type} 
+            analogOrDigital={selectedNode.analogOrDigital} 
             allData={data} 
             nodeName={selectedNode.name} />
         </Modal>

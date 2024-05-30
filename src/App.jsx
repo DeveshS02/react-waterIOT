@@ -36,9 +36,9 @@ const App = () => {
     setLoading(true);
     try {
       const [tankNodes, borewellNodes, waterNodes] = await Promise.all([
-        fetch_data('https://api-gateway-green.vercel.app/water/staticnodesC'),
-        fetch_data('https://api-gateway-green.vercel.app/water/borewellnodesC'),
-        fetch_data('https://api-gateway-green.vercel.app/water/waterC')
+        fetch_data('http://localhost:5001/water/staticnodesC'),
+        fetch_data('http://localhost:5001/water/borewellnodesC'),
+        fetch_data('http://localhost:5001/water/waterC')
       ]);
 
       const filterNodesByLocation = (nodes) => nodes.filter(node => node.location === "IIITH");
@@ -69,9 +69,9 @@ const App = () => {
   const fetchData = useCallback(async () => {
     try {
       const [tankData, borewellData, waterData] = await Promise.all([
-        fetch_data('https://api-gateway-green.vercel.app/water/tankdata'),
-        fetch_data('https://api-gateway-green.vercel.app/water/borewellgraphC'),
-        fetch_data('https://api-gateway-green.vercel.app/water/latestwaterC')
+        fetch_data('http://localhost:5001/water/tankdata'),
+        fetch_data('http://localhost:5001/water/borewellgraphC'),
+        fetch_data('http://localhost:5001/water/latestwaterC')
       ]);
       setData({ tank: renameKeys(tankData), borewell: renameKeys(borewellData), water: renameKeys(waterData) });
     } catch (error) {
