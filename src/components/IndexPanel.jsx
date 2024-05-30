@@ -8,10 +8,7 @@ const IndexPanel = ({
   toggleOption,
 }) => {
   return (
-    <div
-      style={{ width: "353px", height: "280px" }}
-      className="indexpanel mt-2 mb-1 p-3 rounded-lg"
-    >
+    <div className="indexpanel mt-2 mb-1 p-3 rounded-lg">
       <div className="flex justify-between items-center mb-3">
         <h1></h1>
         <h2 className="text-xl text-cyan-950 font-bold">Index</h2>
@@ -21,7 +18,7 @@ const IndexPanel = ({
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
+            className="h-6 w-6 mr-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -39,8 +36,7 @@ const IndexPanel = ({
         {options.map((option) => (
           <div
             key={option.id}
-            // className="flex items-center cursor-pointer"
-            // className={flex items-center rounded-lg cursor-pointer ${selectedOptions.includes(option.id) ? "bg-slate-200  " : ""}}
+           
             className={`custom-button ${selectedOptions.includes(option.id) ? "custom-button-checked" : ""}`}
             onClick={() => toggleOption(option.id)}
           >
