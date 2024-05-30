@@ -1,34 +1,41 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import Navbar from './components/Navbar';
-import IndexButton from './components/IndexButton';
-import IndexPanel from './components/IndexPanel';
-import MapComponent from './components/Map';  // Ensure the import is correct
-import waterTankImage from './images/water_tank.png';
-import prawahImage from './images/water-meter-new.png';
-import shenitechImage from './images/sheni-new.png';
-import sumpImage from './images/sump.png';
-import boreWellImage from './images/borewell.png';
-import pipelineImage from './images/pipeline.png';
-import fetch_data from './utils/fetch_data';
-import extractData from './utils/extract_last_array';
+import React, { useState, useEffect, useCallback } from "react";
+import Navbar from "./components/Navbar";
+import IndexButton from "./components/IndexButton";
+import IndexPanel from "./components/IndexPanel";
+import MapComponent from "./components/Map"; // Ensure the import is correct
+import waterTankImage from "./images/water_tank.png";
+import imagepath from "./images/intro.png";
+import prawahImage from "./images/water-meter-new.png";
+import shenitechImage from "./images/sheni-new.png";
+import sumpImage from "./images/sump.png";
+import boreWellImage from "./images/borewell.png";
+import pipelineImage from "./images/pipeline.png";
+import fetch_data from "./utils/fetch_data";
+import extractData from "./utils/extract_last_array";
+import ImageDisplay from "./components/ImageDisplay"; // Import the new component
 
 const options = [
-  { id: 1, label: 'Water Tank', image: waterTankImage },
-  { id: 2, label: 'Prawah', image: prawahImage },
-  { id: 3, label: 'Shenitech Water Meter', image: shenitechImage },
-  { id: 4, label: 'Sump', image: sumpImage },
-  { id: 5, label: 'Bore Well', image: boreWellImage },
-  { id: 6, label: 'Pipeline', image: pipelineImage }
+  { id: 1, label: "Water Tank", image: waterTankImage },
+  { id: 2, label: "Prawah", image: prawahImage },
+  { id: 3, label: "Shenitech Water Meter", image: shenitechImage },
+  { id: 4, label: "Sump", image: sumpImage },
+  { id: 5, label: "Bore Well", image: boreWellImage },
+  { id: 6, label: "Pipeline", image: pipelineImage },
 ];
 
 const App = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [isNavbarVisible, setIsNavbarVisible] = useState(true); 
+  const [isClosing, setIsClosing] = useState(false);
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
 
   const [nodes, setNodes] = useState({ tank: [], borewell: [], water: [] });
   const [data, setData] = useState({ tank: [], borewell: [], water: [] });
-  const [latestData, setLatestData] = useState({ tank: [], borewell: [], water: [] });
+  const [latestData, setLatestData] = useState({
+    tank: [],
+    borewell: [],
+    water: [],
+  });
   const [loading, setLoading] = useState(true);
   const [bounds, setBounds] = useState(null); // Default bounds
 
@@ -36,28 +43,48 @@ const App = () => {
     setLoading(true);
     try {
       const [tankNodes, borewellNodes, waterNodes] = await Promise.all([
-        fetch_data('https://api-gateway-green.vercel.app/water/staticnodesC'),
-        fetch_data('https://api-gateway-green.vercel.app/water/borewellnodesC'),
-        fetch_data('https://api-gateway-green.vercel.app/water/waterC')
+        fetch_data("https://api-gateway-green.vercel.app/water/staticnodesC"),
+        fetch_data("https://api-gateway-green.vercel.app/water/borewellnodesC"),
+        fetch_data("https://api-gateway-green.vercel.app/water/waterC"),
       ]);
 
-      const filterNodesByLocation = (nodes) => nodes.filter(node => node.location === "IIITH");
+      const filterNodesByLocation = (nodes) =>
+        nodes.filter((node) => node.location === "IIITH");
 
       const filteredTankNodes = filterNodesByLocation(tankNodes);
       const filteredBorewellNodes = filterNodesByLocation(borewellNodes);
       const filteredWaterNodes = filterNodesByLocation(waterNodes);
-      setNodes({ tank: filteredTankNodes, borewell: filteredBorewellNodes, water: filteredWaterNodes });
+      setNodes({
+        tank: filteredTankNodes,
+        borewell: filteredBorewellNodes,
+        water: filteredWaterNodes,
+      });
 
       // Calculate extreme coordinates for setting bounds
-      const allNodes = [...filteredTankNodes, ...filteredBorewellNodes, ...filteredWaterNodes];
+      const allNodes = [
+        ...filteredTankNodes,
+        ...filteredBorewellNodes,
+        ...filteredWaterNodes,
+      ];
       if (allNodes.length > 0) {
-        const latitudes = allNodes.map(node => Array.isArray(node.coordinates) ? node.coordinates[0] : node.coordinates.lat);
-        const longitudes = allNodes.map(node => Array.isArray(node.coordinates) ? node.coordinates[1] : node.coordinates.lng);
+        const latitudes = allNodes.map((node) =>
+          Array.isArray(node.coordinates)
+            ? node.coordinates[0]
+            : node.coordinates.lat
+        );
+        const longitudes = allNodes.map((node) =>
+          Array.isArray(node.coordinates)
+            ? node.coordinates[1]
+            : node.coordinates.lng
+        );
         const maxLat = Math.max(...latitudes);
         const minLat = Math.min(...latitudes);
         const maxLng = Math.max(...longitudes);
         const minLng = Math.min(...longitudes);
-        setBounds([[minLat, minLng], [maxLat, maxLng]]);
+        setBounds([
+          [minLat, minLng],
+          [maxLat, maxLng],
+        ]);
       }
     } catch (error) {
       console.error("Error fetching nodes: ", error);
@@ -69,11 +96,15 @@ const App = () => {
   const fetchData = useCallback(async () => {
     try {
       const [tankData, borewellData, waterData] = await Promise.all([
-        fetch_data('https://api-gateway-green.vercel.app/water/tankdata'),
-        fetch_data('https://api-gateway-green.vercel.app/water/borewellgraphC'),
-        fetch_data('https://api-gateway-green.vercel.app/water/latestwaterC')
+        fetch_data("https://api-gateway-green.vercel.app/water/tankdata"),
+        fetch_data("https://api-gateway-green.vercel.app/water/borewellgraphC"),
+        fetch_data("https://api-gateway-green.vercel.app/water/latestwaterC"),
       ]);
-      setData({ tank: renameKeys(tankData), borewell: renameKeys(borewellData), water: renameKeys(waterData) });
+      setData({
+        tank: renameKeys(tankData),
+        borewell: renameKeys(borewellData),
+        water: renameKeys(waterData),
+      });
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -88,7 +119,7 @@ const App = () => {
     setLatestData({
       tank: extractData(data.tank),
       borewell: extractData(data.borewell),
-      water: extractData(data.water)
+      water: extractData(data.water),
     });
   }, [data]);
 
@@ -101,7 +132,7 @@ const App = () => {
       flowrate: "Flow Rate", //kL/hr
       pressure: "Pressure", //centibar
       pressurevoltage: "Pressure Voltage", //centibar
-      totalflow: "Total Flow" //Litres
+      totalflow: "Total Flow", //Litres
     };
 
     for (const outerKey in data) {
@@ -133,35 +164,45 @@ const App = () => {
   };
 
   const handleButtonClick = () => {
-    setIsOpen(!isOpen);
+    setIsOpen(true);
+    setIsClosing(false);
   };
 
   const handleClose = () => {
-    setIsOpen(false);
+    setIsClosing(true);
+  };
+
+  const handleAnimationEnd = () => {
+    if (isClosing) {
+      setIsOpen(false);
+      setIsClosing(false);
+    }
   };
 
   const getDropdownLabel = () => {
-    if (selectedOptions.length === 0) return 'All Nodes';
-    if (selectedOptions.length > 1) return 'Multi';
-    const selectedOption = options.find(option => option.id === selectedOptions[0]);
-    return selectedOption ? selectedOption.label : 'All Nodes';
+    if (selectedOptions.length === 0) return "All Nodes";
+    if (selectedOptions.length > 1) return "Multi";
+    const selectedOption = options.find(
+      (option) => option.id === selectedOptions[0]
+    );
+    return selectedOption ? selectedOption.label : "All Nodes";
   };
 
   return (
     <div>
       {isNavbarVisible && (
-        <Navbar 
-          dropdownLabel={getDropdownLabel()} 
-          options={options} 
-          selectedOptions={selectedOptions} 
-          toggleOption={toggleOption} 
+        <Navbar
+          dropdownLabel={getDropdownLabel()}
+          options={options}
+          selectedOptions={selectedOptions}
+          toggleOption={toggleOption}
           data={data}
         />
       )}
-      
-      <MapComponent 
+
+      <MapComponent
         selectedOptions={selectedOptions}
-        setIsNavbarVisible={setIsNavbarVisible} 
+        setIsNavbarVisible={setIsNavbarVisible}
         location="IIITH"
         nodes={nodes}
         latestData={latestData}
@@ -169,21 +210,34 @@ const App = () => {
         bounds={bounds}
         loading={loading}
       />
-      
+
       <div className="fixed bottom-4 left-4 p-2 z-50">
-          {!isOpen && <IndexButton handleButtonClick={handleButtonClick} />}
-        <div className={isOpen ? 'blockk' : 'hiddenn'}>
-        {isOpen && (
-          <IndexPanel
-            isOpen={isOpen}
-            handleClose={handleClose}
-            options={options}
-            selectedOptions={selectedOptions}
-            toggleOption={toggleOption}
-          />
+        {!isOpen && !isClosing && (
+          <IndexButton handleButtonClick={handleButtonClick} />
         )}
+        <div
+          className={`${
+            isOpen ? (isClosing ? "closing" : "blockk") : "hiddenn"
+          }`}
+          onAnimationEnd={handleAnimationEnd}
+        >
+          {isOpen && (
+            <IndexPanel
+              isOpen={isOpen}
+              handleClose={handleClose}
+              options={options}
+              selectedOptions={selectedOptions}
+              toggleOption={toggleOption}
+            />
+          )}
         </div>
-      </div>
+      </div>
+
+      {!loading && (
+        <div>
+          <ImageDisplay imageSrc={imagepath} altText="Your Alt Text" />
+        </div>
+      )}
     </div>
   );
 };
