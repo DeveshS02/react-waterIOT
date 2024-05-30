@@ -145,7 +145,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
   }) => {
     return (
       <div className="controls">
-        {hasMultipleAttributes && (
+        {viewMode !== 'compare' && hasMultipleAttributes && (
           <div className="tabs">
             <h4>Graph Modes</h4>
             <div className="tab-buttons">
@@ -202,6 +202,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       </div>
     );
   };
+  
   
 
   return (
