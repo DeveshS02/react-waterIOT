@@ -145,7 +145,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
   }) => {
     return (
       <div className="controls">
-        {viewMode !== 'compare' && (
+        {hasMultipleAttributes && (
           <div className="tabs">
             <h4>Graph Modes</h4>
             <div className="tab-buttons">
@@ -155,14 +155,12 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
               >
                 Single View
               </button>
-              {hasMultipleAttributes && (
-                <button
-                  className={`tab multi ${viewMode === 'all' ? 'active' : ''}`}
-                  onClick={() => setViewMode('all')}
-                >
-                  Multi View
-                </button>
-              )}
+              <button
+                className={`tab multi ${viewMode === 'all' ? 'active' : ''}`}
+                onClick={() => setViewMode('all')}
+              >
+                Multi View
+              </button>
             </div>
           </div>
         )}
@@ -204,6 +202,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       </div>
     );
   };
+  
 
   return (
     <div className="graph-container">
