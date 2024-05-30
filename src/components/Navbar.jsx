@@ -3,7 +3,7 @@ import image from '../images/iiit-new.png';
 import Dropdown from './Dropdown';
 import StatusNode from "./status_node";
 
-const Navbar = ({ dropdownLabel, options, selectedOptions, toggleOption }) => {
+const Navbar = ({ dropdownLabel, options, selectedOptions, toggleOption, data }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showContainer, setShowContainer] = useState(false);
   const handleButtonClick = () => {
@@ -51,7 +51,7 @@ const Navbar = ({ dropdownLabel, options, selectedOptions, toggleOption }) => {
             <a href="https://www.iiit.ac.in/" className="hover:text-blue-300">IIIT</a>
             <a href="https://spcrc.iiit.ac.in/" className="hover:text-blue-300">SPCRC</a>
             <button onClick={handleButtonClick} className="hover:text-blue-300">Status of Node</button>
-            {showContainer && <StatusNode onClose={handleCloseButtonClick} />}
+            {showContainer && <StatusNode onClose={handleCloseButtonClick} data={data} />}
 
             <div className="mr-4">
               <Dropdown label={dropdownLabel} items={dropdownItems} selectedOptions={selectedOptions} toggleOption={toggleOption} />

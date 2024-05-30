@@ -69,7 +69,7 @@ const ContentDisplay = ({
               <span className="value">{item.pressure} cbar</span>
             </div>
             <div>
-              <button className="text-white details text-black rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20">
+              <button className="text-white details  rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20">
                 Details
               </button>
             </div>
@@ -94,7 +94,7 @@ const ContentDisplay = ({
               <span className="value">{item.waterlevel} cm</span>
             </div>
             <div>
-              <button className="text-white details text-black rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20">
+              <button className="text-white details rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20">
                 Details
               </button>
             </div>
@@ -108,13 +108,13 @@ const ContentDisplay = ({
             <span className="value">{item.waterlevel} cm</span>
           </div>
           <div>
-            <button className="text-white details text-black rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20">
+            <button className="text-white details rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20">
               Details
             </button>
           </div>
         </div>
       )}
-      <div className="hidden flex flex-row justify-center">
+      <div className="hidden  flex-row justify-center">
         <span className="text-zinc-700 font-semibold">Last Updated</span>
         &nbsp;
         <span className="text-zinc-700 font-semibold">{item.created_at}</span>

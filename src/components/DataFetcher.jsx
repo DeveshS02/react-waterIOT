@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from "react";
 import ContentDisplay from "./ContentDisplay";
 
-const DataFetcher = ({ activeTab, filter }) => {
+const DataFetcher = ({ activeTab, filter, allNodes }) => {
   const [tankData, settankData] = useState([]);
   const [WaterMeterData, setWaterMeterData] = useState([]);
   const [borewellData, setborewellData] = useState([]);
   useEffect(() => {
-    const fetchDatat = async () => {
-      try {
-        const response = await fetch(
-          "https://api-gateway-green.vercel.app/water/tankdata"
-        );
-        const data = await response.json();
-        // console.log(Object.keys(data));
+    const fetchDatat =  () => {
+        const data = allNodes["tank"];
         const lastObjects = Object.keys(data).map((key) => {
           const array = data[key];
           const lastItem = array[array.length - 1];
-          const lastItemDate = new Date(lastItem.created_at);
+          console.log(lastItem);
+          const lastItemDate = new Date(lastItem.Last_Updated);
           const now = new Date();
           const differenceInMilliseconds =
             now.getTime() - lastItemDate.getTime();
@@ -27,30 +23,24 @@ const DataFetcher = ({ activeTab, filter }) => {
           }
           return {
             name: key,
-            totalvolume: lastItem.totalvolume,
-            waterlevel: lastItem.waterlevel,
-            temperature: lastItem.temperature,
-            created_at: lastItem.created_at,
+            totalvolume: lastItem['Total Volume'],
+            waterlevel: lastItem['Water Level'],
+            temperature: lastItem.Temperature,
+            created_at: lastItem.Last_Updated,
             stat: status,
           };
         });
 
         settankData(lastObjects);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      
     };
-    const fetchDatam = async () => {
-      try {
-        const response = await fetch(
-          "https://api-gateway-green.vercel.app/water/latestwaterC"
-        );
-        const data = await response.json();
-        // console.log(Object.keys(data));
+    const fetchDatam = () => {
+      
+        const data =  allNodes["water"];
         const lastObjects = Object.keys(data).map((key) => {
           const array = data[key];
           const lastItem = array[array.length - 1];
-          const lastItemDate = new Date(lastItem.created_at);
+          const lastItemDate = new Date(lastItem.Last_Updated)
           const now = new Date();
           const differenceInMilliseconds =
             now.getTime() - lastItemDate.getTime();
@@ -61,30 +51,24 @@ const DataFetcher = ({ activeTab, filter }) => {
           }
           return {
             name: key,
-            totalflow: lastItem.totalflow,
-            flowrate: lastItem.flowrate,
-            created_at: lastItem.created_at,
-            pressure:lastItem.pressure,
+            totalflow: lastItem['Total Flow'],
+            flowrate: lastItem['Flow Rate'],
+            created_at: lastItem.Last_Updated,
+            pressure:lastItem.Pressure,
             stat: status,
           };
         });
 
         setWaterMeterData(lastObjects);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      
     };
     const fetchDatab = async () => {
-      try {
-        const response = await fetch(
-          "https://api-gateway-green.vercel.app/water/borewellgraphC"
-        );
-        const data = await response.json();
-        // console.log(Object.keys(data));
+
+        const data = allNodes["borewell"];
         const lastObjects = Object.keys(data).map((key) => {
           const array = data[key];
           const lastItem = array[array.length - 1];
-          const lastItemDate = new Date(lastItem.created_at);
+          const lastItemDate = new Date(lastItem.Last_Updated);
           const now = new Date();
           const differenceInMilliseconds =
             now.getTime() - lastItemDate.getTime();
@@ -95,16 +79,14 @@ const DataFetcher = ({ activeTab, filter }) => {
           }
           return {
             name: key,
-            waterlevel: lastItem.waterlevel,
-            created_at: lastItem.created_at,
+            waterlevel: lastItem['Water Level'],
+            created_at: lastItem.last_Updated,
             stat: status,
           };
         });
 
         setborewellData(lastObjects);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      
     };
 
     fetchDatat();

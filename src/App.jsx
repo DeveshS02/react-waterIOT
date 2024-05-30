@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import IndexButton from './components/IndexButton';
 import IndexPanel from './components/IndexPanel';
@@ -9,6 +9,8 @@ import shenitechImage from './images/sheni-new.png';
 import sumpImage from './images/sump.png';
 import boreWellImage from './images/borewell.png';
 import pipelineImage from './images/pipeline.png';
+import fetch_data from './utils/fetch_data';
+import extractData from './utils/extract_last_array';
 
 const options = [
   { id: 1, label: 'Water Tank', image: waterTankImage },
@@ -23,6 +25,102 @@ const App = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isNavbarVisible, setIsNavbarVisible] = useState(true); 
+
+  const [nodes, setNodes] = useState({ tank: [], borewell: [], water: [] });
+  const [data, setData] = useState({ tank: [], borewell: [], water: [] });
+  const [latestData, setLatestData] = useState({ tank: [], borewell: [], water: [] });
+  const [loading, setLoading] = useState(true);
+  const [bounds, setBounds] = useState(null); // Default bounds
+
+  const fetchNodesData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [tankNodes, borewellNodes, waterNodes] = await Promise.all([
+        fetch_data('https://api-gateway-green.vercel.app/water/staticnodesC'),
+        fetch_data('https://api-gateway-green.vercel.app/water/borewellnodesC'),
+        fetch_data('https://api-gateway-green.vercel.app/water/waterC')
+      ]);
+
+      const filterNodesByLocation = (nodes) => nodes.filter(node => node.location === "IIITH");
+
+      const filteredTankNodes = filterNodesByLocation(tankNodes);
+      const filteredBorewellNodes = filterNodesByLocation(borewellNodes);
+      const filteredWaterNodes = filterNodesByLocation(waterNodes);
+      setNodes({ tank: filteredTankNodes, borewell: filteredBorewellNodes, water: filteredWaterNodes });
+
+      // Calculate extreme coordinates for setting bounds
+      const allNodes = [...filteredTankNodes, ...filteredBorewellNodes, ...filteredWaterNodes];
+      if (allNodes.length > 0) {
+        const latitudes = allNodes.map(node => Array.isArray(node.coordinates) ? node.coordinates[0] : node.coordinates.lat);
+        const longitudes = allNodes.map(node => Array.isArray(node.coordinates) ? node.coordinates[1] : node.coordinates.lng);
+        const maxLat = Math.max(...latitudes);
+        const minLat = Math.min(...latitudes);
+        const maxLng = Math.max(...longitudes);
+        const minLng = Math.min(...longitudes);
+        setBounds([[minLat, minLng], [maxLat, maxLng]]);
+      }
+    } catch (error) {
+      console.error("Error fetching nodes: ", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const [tankData, borewellData, waterData] = await Promise.all([
+        fetch_data('https://api-gateway-green.vercel.app/water/tankdata'),
+        fetch_data('https://api-gateway-green.vercel.app/water/borewellgraphC'),
+        fetch_data('https://api-gateway-green.vercel.app/water/latestwaterC')
+      ]);
+      setData({ tank: renameKeys(tankData), borewell: renameKeys(borewellData), water: renameKeys(waterData) });
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchNodesData();
+    fetchData();
+  }, [fetchNodesData, fetchData]);
+
+  useEffect(() => {
+    setLatestData({
+      tank: extractData(data.tank),
+      borewell: extractData(data.borewell),
+      water: extractData(data.water)
+    });
+  }, [data]);
+
+  const renameKeys = (data) => {
+    const keyMapping = {
+      created_at: "Last_Updated",
+      waterlevel: "Water Level", //cm
+      temperature: "Temperature", //celcius
+      totalvolume: "Total Volume", //m3
+      flowrate: "Flow Rate", //kL/hr
+      pressure: "Pressure", //centibar
+      pressurevoltage: "Pressure Voltage", //centibar
+      totalflow: "Total Flow" //Litres
+    };
+
+    for (const outerKey in data) {
+      if (Object.hasOwnProperty.call(data, outerKey)) {
+        const innerObjects = data[outerKey];
+        for (const obj of innerObjects) {
+          for (const key in obj) {
+            if (Object.hasOwnProperty.call(obj, key) && keyMapping[key]) {
+              // If the key exists in the mapping, rename it
+              obj[keyMapping[key]] = obj[key];
+              delete obj[key]; // Delete the old key
+            }
+          }
+        }
+      }
+    }
+
+    return data;
+  };
 
   const toggleOption = (id) => {
     setSelectedOptions((prevSelected) => {
@@ -57,6 +155,7 @@ const App = () => {
           options={options} 
           selectedOptions={selectedOptions} 
           toggleOption={toggleOption} 
+          data={data}
         />
       )}
       
@@ -64,6 +163,11 @@ const App = () => {
         selectedOptions={selectedOptions}
         setIsNavbarVisible={setIsNavbarVisible} 
         location="IIITH"
+        nodes={nodes}
+        latestData={latestData}
+        data={data}
+        bounds={bounds}
+        loading={loading}
       />
       
       <div className="fixed bottom-4 left-4 p-2 z-50">

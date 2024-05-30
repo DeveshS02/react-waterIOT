@@ -4,13 +4,13 @@ import ContentDisplay from "./ContentDisplay";
 
 const tabs = ["AllNodes", "WaterMeter", "WaterTank", "Borewell"];
 
-const StatusNode = ({ onClose }) => {
+const StatusNode = ({ onClose, data }) => {
   const [activeTab, setActiveTab] = useState("AllNodes");
   const [filter, setFilter] = useState("All");
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div className="h-max maincss p-6 rounded-lg shadow-lg relative w-3/4 h-4/5 overflow-hidden">
+      <div className="h-max maincss p-6 rounded-lg shadow-lg relative w-3/4 overflow-hidden">
         <button
           className="absolute top-7 right-5 text-cyan-950 hover:text-cyan-700"
           onClick={onClose}
@@ -62,7 +62,7 @@ const StatusNode = ({ onClose }) => {
           </div>
         </div>
         <div className="overflow-y-auto h-4/5 bg-transparent rounded p-4">
-          <DataFetcher activeTab={activeTab} filter={filter} />
+          <DataFetcher activeTab={activeTab} filter={filter} allNodes={data} />
         </div>
       </div>
     </div>

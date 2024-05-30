@@ -312,7 +312,7 @@
 .blockk{
   visibility: visible;
   opacity: 1;
-  transform: translateX(10%) translateY(-10%) scale(1);
+  transform: translateX(5%) translateY(-10%) scale(1);
   transition: opacity 0.3s, transform 0.4s;
   transform-origin: bottom left;
   }
