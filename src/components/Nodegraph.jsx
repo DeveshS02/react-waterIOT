@@ -10,7 +10,11 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
   const [selectedNodes, setSelectedNodes] = useState([nodeName]);
   const nodeNames = Object.keys(allData[nodeType]);
 
-  const getRandomColor = () => `#${Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0')}`;
+  const getRandomColor = () => {
+    const hexRange = 0x7F7F7F;
+    const randomHex = Math.floor(Math.random() * hexRange).toString(16).padStart(6, '0');
+    return `#${randomHex}`;
+  };
 
   const chartDataSingle = useMemo(() => {
     const colors = {};
@@ -147,10 +151,10 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       <div className="controls">
         {viewMode !== 'compare' && hasMultipleAttributes && (
           <div className="tabs">
-            <h4>Graph Modes</h4>
+            <h4>Graph Mode</h4>
             <div className="tab-buttons">
               <button
-                className={`tab single ${viewMode === 'single' ? 'active' : ''}`}
+                className= {`tab single ${viewMode === 'single' ? 'active' : ''}`}
                 onClick={() => setViewMode('single')}
               >
                 Single View
@@ -159,12 +163,12 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
                 className={`tab multi ${viewMode === 'all' ? 'active' : ''}`}
                 onClick={() => setViewMode('all')}
               >
-                Multi View
+                Summary View
               </button>
             </div>
           </div>
         )}
-        <div className="right-controls">
+        <div className={`right-controls ${viewMode === 'compare' ? 'flex-1' : '' }`}>
           {viewMode !== 'compare' && (
             <button
               className="btn btn-secondary"
@@ -326,4 +330,4 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
   );
 };
 
-export default NodeGraph;
+export default NodeGraph;

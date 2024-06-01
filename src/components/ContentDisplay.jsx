@@ -154,7 +154,7 @@ const ContentDisplay = ({
       return (
         <div
           key={item.key}
-          className={`${className} cursor-pointer transform transition-transform duration-300 ease-in-out hover:!scale-90 rounded-lg flex-shrink-0`}
+          className={`${className} cursor-pointer transform transition-transform duration-300 ease-in-out  hover:!scale-90 rounded-lg flex-shrink-0`}
         >
           {item}
         </div>

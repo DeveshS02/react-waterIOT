@@ -36,8 +36,9 @@ const IndexPanel = ({
         {options.map((option) => (
           <div
             key={option.id}
-           
-            className={`custom-button ${selectedOptions.includes(option.id) ? "custom-button-checked" : ""}`}
+            className={`custom-button ${
+              selectedOptions.includes(option.id) ? "custom-button-checked" : ""
+            }`}
             onClick={() => toggleOption(option.id)}
           >
             <input

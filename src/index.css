@@ -2,64 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
-.custom-button{
-    color: rgb(63, 64, 61);
-    transition: transform 0.5s, box-shadow 0.3s;
-    display: flex;
-  }
+  /* animation and styles for Modal.jsx */
 
-.custom-button:hover{
-    transform: scale(1.05);
+  @keyframes expandIn {
+    from {
+      transform: translate(-50%, -50%) scale(0.1);
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
   }
   
-.custom-button-checked {
-     border-radius: 10px;
-    box-shadow:  inset 0 -7px 10px rgba(255, 255, 255, 0.1), 
-     0 2px 10px rgba(0, 0, 0, 0.2);
-    color: black;
-    background-color: rgb(251, 251, 247);
+  @keyframes shrinkOut {
+    from {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    to {
+      transform: translate(-50%, -50%) scale(0.1);
+      opacity: 0;
+    }
   }
-
-  /* modal css */
-
+  
   .modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 90vh;
-  width: 90vw;
-  overflow-y: auto;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 1rem;
-  backdrop-filter: blur(15px);
-  box-shadow: 0 0.25rem 0.5rem rgba(28, 79, 93, 0.1);
-  padding: 2rem;
-  z-index: 1000;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 999;
-}
-
-.modal-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  color: #97266d;
-  cursor: pointer;
-}
-
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: 90vh;
+    width: 90vw;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 1rem;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0.25rem 0.5rem rgba(28, 79, 93, 0.1);
+    padding: 2rem;
+    z-index: 1000;
+    transform: translate(-50%, -50%) scale(0.1);
+    opacity: 0;
+    animation: expandIn 0.5s forwards;
+  }
   
-  /* styles.css */
+  .modal.close {
+    animation: shrinkOut 0.5s forwards;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999;
+    opacity: 1;
+    transition: opacity 0.5s;
+  }
+  
+  .modal-overlay.hidden {
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #97266d;
+    cursor: pointer;
+  }
+  
+
+  /* custom loading animation App.jsx*/
 
 .loader {
   border: 8px solid #f3f3f3;
@@ -76,7 +93,7 @@
   100% { transform: rotate(360deg); }
 }
 
-/*css for views in graph */
+/*css for  all views in graph mode Nodegraph.jsx*/
 
 .graph-container {
   position: relative;
@@ -88,7 +105,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  width: 97%;
+  width: 93%;
   margin: auto;
 }
 
@@ -157,6 +174,7 @@
 
 .right-controls {
   display: flex;
+  justify-content: space-between;
   gap: 0.5rem;
 }
 
@@ -324,53 +342,7 @@
 }
 
 
-/*css for glassy effect in navbar */
-/* .navbar-glassmorphism {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  position: relative;
-  overflow: visible;
-}
-
-.navbar-glassmorphism::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(130deg, rgba(10, 184, 219, 0.4), rgba(34, 59, 185, 0.371), rgba(189, 196, 208, 0.4));
-  background-size: 200% 200%;
-  z-index: -1;
-  animation: gradientAnimation 10s linear infinite alternate-reverse; 
-  pointer-events: none; 
-  border-radius: inherit;
-}
-
-@keyframes gradientAnimation {
-  0% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.navbar-glassmorphism .hover\:text-blue-300:hover {
-  color: #3b82f6;
-}
-
-.navbar-glassmorphism .hover\:bg-blue-700:hover {
-  background-color: #1e40af;
-}
-
-.nav-text{
-  color: #274068;
-} */
-
-/*css for custom scrollbar in graph */
+/*css for custom scrollbar in modal graph Modal.jsx */
 
 .nodeGraph::-webkit-scrollbar {
   width: 8px; 
@@ -390,7 +362,7 @@
   background: #750048; 
 }
 
-/* css for status of nodes */
+/* css for status of nodes ContentDisplay.jsx */
 
 .bg-custom{
   background-color: #123462
@@ -416,52 +388,35 @@
 .hide-scrollbar {
   -ms-overflow-style: none; 
   scrollbar-width: none;  
-}
-.blockk{
-  visibility: visible;
-  opacity: 1;
-  transform: translateX(5%) translateY(-10%) scale(1);
-  transition: opacity 0.3s, transform 0.4s;
-  transform-origin: bottom left;
-  }
-  .hiddenn{
-    visibility: hidden;
-    opacity: 0;
-    transform: scale(0.1);
-    transition: visibility 0s linear 0.4s, opacity 0.3s, transform 0.4s;
-  }  
-  .maincss{
+}  
+.maincss{
     background: linear-gradient(rgb(190, 243, 243, .3), rgb(190, 243, 243, .3) 28%, rgb(190, 243, 243, .3) 100%);
-    /* box-shadow: 1px 1px 1px rgba(0, 54, 65, 0.3), 
-    -1px -1px 1px rgba(0, 68, 81, 0.3), 
-    inset -3px -3px 5px rgba(255, 255, 255, 0.6), 
-    inset 3px 3px 5px rgba(255, 255, 255, 0.6); */
     border: 1px solid rgba(255, 255, 255, 0.18);
     backdrop-filter: blur(13px);
-   }
- .acardcss{
+    overflow: hidden; 
+}
+.acardcss{
   background:rgb(255, 255, 255, 0.4);
   box-shadow: 1px 1px 1px rgba(0, 180, 216, 0.3), 
   -1px -1px 1px rgba(0, 180, 216, 0.3), 
   inset -3px -3px 5px rgba(255, 255, 255, 0.6), 
   inset 3px 3px 5px rgba(255, 255, 255, 0.6);
   width: 270px;
-  /* height: 100%; */
 }
- .icardcss{
+.icardcss{
   background:rgb(255, 255, 255, 0.4);
   box-shadow: 1px 1px 1px rgba(0, 180, 216, 0.3), 
   -1px -1px 1px rgba(0, 180, 216, 0.3), 
   inset -3px -3px 5px rgba(255, 255, 255, 0.6), 
   inset 3px 3px 5px rgba(255, 255, 255, 0.6);
  width: 270px;
- }
- .heading{
+}
+.heading{
    overflow:scroll;
      text-overflow:clip;
     white-space:nowrap;
- }
- .heading::-webkit-scrollbar {
+}
+.heading::-webkit-scrollbar {
   display: none;
 }
 .heading {
@@ -499,15 +454,55 @@ font-weight: 600;
 .details{
 background-color: rgb(8, 51, 68);
 }
+
+
+@keyframes genieIn {
+  0% {
+    opacity: 0;
+    transform:  translateY(100%);
+    transform-origin: bottom;
+  }
+  100% {
+    opacity: 1;
+    transform:   translateY(0);
+    transform-origin: bottom;
+  }
+}
+
+@keyframes genieOut {
+  0% {
+    opacity: 1;
+    transform:  translateY(0);
+    transform-origin: bottom;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
+    transform-origin: bottom;
+  }
+}
+
+.genie-in {
+  animation: genieIn 0.7s forwards;
+}
+
+.genie-out {
+  animation: genieOut 0.7s forwards;
+}
+
+
+/* css for index button and filter panel IndexPanel.jsx */
+
 .indexpanel{
   width: 353px;
   height: 280px;
-  background: linear-gradient(rgb(190, 243, 243, .3), rgb(190, 243, 243, .3) 28%, rgb(190, 243, 243, .3) 100%);
+  background: linear-gradient(rgb(190, 243, 243, .5), rgb(190, 243, 243, .5) 28%, rgb(190, 243, 243, .5) 100%);
       box-shadow: 1px 1px 1px rgba(0, 54, 65, 0.3), 
       -1px -1px 1px rgba(0, 68, 81, 0.3), 
-      inset -3px -3px 5px rgba(255, 255, 255, 0.6), 
-      inset 3px 3px 5px rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(13px);
+      inset -3px -3px 5px rgba(255, 255, 255, 0.4), 
+      inset 3px 3px 5px rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(2px);
+      
 }
 @media (max-width: 768px) {
   .indexpanel{
@@ -524,71 +519,164 @@ box-shadow: 2px 2px 2px rgba(0, 54, 65, 1),
     inset -3px -3px 5px rgba(255, 255, 255, 0.2), 
     inset 3px 3px 5px rgba(255, 255, 255, 0.2);
     background: linear-gradient(rgb(190, 243, 243, .1), rgb(190, 243, 243, .1) 28%, rgb(190, 243, 243, .1) 100%);
-    backdrop-filter: blur(20px);
-}
-.drop {
-border: 1px solid rgba(255, 255, 255, 0.18);
-visibility: visible;
-opacity: 1;
-transform: translateY(0) scale(1);
-transition: transform 0.4s;
-transform-origin: top;
+    backdrop-filter: blur(2px);
+} 
+
+.blockk {
+  animation: openAnimation 0.5s forwards;
+  transform-origin: bottom left;
 }
 
-.drophiddenn {
-border: 1px solid rgba(255, 255, 255, 0.18);
-visibility: hidden;
-opacity: 0;
-transform: translateY(-20%) scale(0.95);
-transition: visibility 0s linear 0.4s,  transform 0.4s;
+.closing {
+  animation: closeAnimation 0.5s forwards;
+  transform-origin: bottom left;
 }
 
-.dropbtn:hover{
-color: #DB6705;
+@keyframes openAnimation {
+  0% {
+    visibility: visible;
+    opacity: 0;
+    transform: scale(0.1);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1) translateX(5%) translateY(-10%);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(5%) translateY(-10%);
+  }
 }
+
+@keyframes closeAnimation {
+  0% {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1) translateX(5%) translateY(-10%);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.1);
+  }
+}
+
+  
+
+/* glassy style and gradient bg for navbar navbar.jsx*/
 .navbar-glassmorphism {
-background: rgba(255, 255, 255, 0.1);
-/* backdrop-filter: blur(10px); */
-/* -webkit-backdrop-filter: blur(10px); */
-border: 1px solid rgba(255, 255, 255, 0.18);
-position: relative;
-overflow: visible;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  position: relative;
+  overflow: visible;
+  }
+  
+  .navbar-glassmorphism::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+    backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(130deg, rgba(10, 184, 219, 0.6), #223bb978, rgba(189, 196, 208, 0.6));
+  background-size: 200% 200%;
+  z-index: -1;
+  animation: gradientAnimation 10s linear infinite alternate-reverse; 
+  pointer-events: none; 
+  border-radius: inherit;
+  }
+  
+  @keyframes gradientAnimation {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+  }
+  .navbar-glassmorphism .hover\:text-blue-300:hover {
+  color: #DB6705
+  }
+  
+  .navbar-glassmorphism .hover\:bg-blue-700:hover {
+  background-color: #1e40af;
+  }
+  
+  .nav-text{
+  color:#05337d;
+  }
+  
+
+/* css for selection of nodes dropdown animation */
+@keyframes dropdownOpen {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
 }
 
-.navbar-glassmorphism::before {
-content: '';
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-  backdrop-filter: blur(10px);
--webkit-backdrop-filter: blur(10px);
-background: linear-gradient(130deg, rgba(10, 184, 219, 0.6), #223bb978, rgba(189, 196, 208, 0.6));
-background-size: 200% 200%;
-z-index: -1;
-animation: gradientAnimation 10s linear infinite alternate-reverse; 
-pointer-events: none; 
-border-radius: inherit;
+@keyframes dropdownClose {
+  0% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
 }
 
-@keyframes gradientAnimation {
-0% {
-  background-position: 100% 50%;
-}
-100% {
-  background-position: 0% 50%;
-}
-}
-.navbar-glassmorphism .hover\:text-blue-300:hover {
-/* color: rgb(136, 19, 55); */
-color: #DB6705
+.dropdown-menu {
+  transform-origin: top;
+  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
 }
 
-.navbar-glassmorphism .hover\:bg-blue-700:hover {
-background-color: #1e40af;
+.dropdown-open {
+  animation: dropdownOpen 0.4s forwards;
 }
 
-.nav-text{
-color:#05337d;
+.dropdown-closed {
+  animation: dropdownClose 0.4s forwards;
+}
+
+/* css for mobile animation for dropdown */
+
+@keyframes dropdownopen {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes dropdownclose {
+  0% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+}
+
+.navbar-menu {
+  transform-origin: top;
+  transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+}
+
+.navbar-open {
+  animation: dropdownopen 0.6s forwards;
+}
+
+.navbar-closed {
+  animation: dropdownclose 0.6s forwards;
 }

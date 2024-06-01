@@ -1,12 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Modal = ({ children, onClose }) => {
+  const [closing, setClosing] = useState(false);
+  const [contentVisible, setContentVisible] = useState(false);
+
+  const handleClose = () => {
+    setClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 500); // Match the duration of the close animation
+  };
+
+  useEffect(() => {
+    const overlay = document.querySelector('.modal-overlay');
+    overlay.classList.remove('hidden');
+    setTimeout(() => {
+      setContentVisible(true);
+    }, 500); // Match the duration of the open animation
+    return () => {
+      overlay.classList.add('hidden');
+    };
+  }, []);
+
   return (
     <>
-      <div className="modal-overlay" onClick={onClose}></div>
-      <div className="modal nodeGraph">
-        <button className="modal-close" onClick={onClose}>×</button>
-        {children}
+      <div className="modal-overlay hidden" onClick={handleClose}></div>
+      <div className={`modal nodeGraph ${closing ? 'close' : ''}`}>
+        <button className="modal-close" onClick={handleClose}>×</button>
+        {contentVisible && children}
       </div>
     </>
   );

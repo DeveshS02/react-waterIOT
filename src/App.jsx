@@ -167,7 +167,6 @@ const App = () => {
     setIsOpen(true);
     setIsClosing(false);
   };
-
   const handleClose = () => {
     setIsClosing(true);
   };
@@ -232,7 +231,6 @@ const App = () => {
           )}
         </div>
       </div>
-
       {!loading && (
         <div>
           <ImageDisplay imageSrc={imagepath} altText="Your Alt Text" />
@@ -242,4 +240,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default App;
