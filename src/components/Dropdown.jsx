@@ -50,15 +50,15 @@ const Dropdown = ({ label, items, selectedOptions, toggleOption }) => {
       </button>
       {shouldRender && (
         <ul
-          className={`dropdown-menu z-20 absolute right-0 mt-2 w-48 bg-white bg-opacity-30 backdrop-blur-md text-black rounded-md shadow-lg ${
+          className={`dropdown-menu z-20 absolute right-0 mt-2 w-48 bg-white bg-opacity-30 backdrop-blur-lg text-black rounded-md shadow-lg ${
             isOpen ? "dropdown-open" : "dropdown-closed"
           }`}
         >
           {items.map((item, index) => (
             <li key={index}>
               <div
-                className={`flex items-center cursor-pointer p-2 bg-transparent bg-opacity-30 backdrop-blur-md hover:bg-white hover:bg-opacity-100 ${
-                  selectedOptions.includes(index + 1) ? "bg-white bg-opacity-100" : ""
+                className={`flex items-center cursor-pointer p-2  hover:bg-white hover:bg-opacity-70 ${
+                  selectedOptions.includes(index + 1) ? "bg-white bg-opacity-70" : ""
                 }`}
                 onClick={() => toggleOption(index + 1)}
               >

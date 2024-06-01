@@ -100,6 +100,19 @@
   height: 60vh;
 }
 
+.graph-item{
+  max-height: 450px;
+}
+
+.all-mode-item{
+  /* border: 2px red solid; */
+  margin-top: 1rem;
+}
+
+.latest-data{
+  text-align: center;
+  font-size: 1.1rem;
+}
 .controls {
   display: flex;
   justify-content: space-between;
@@ -117,6 +130,7 @@
   flex-direction: column;
   align-items: center;
   width: 20vw;
+  min-width: 300px;
 }
 
 .tabs h4 {
@@ -269,10 +283,22 @@
 }
 
 .centered-title {
+  border-radius: 3rem;
+  background-color: #d0d0d0ae;
   margin-top: 0.4rem;
+  align-items: center;
+  display: flex;
+  gap: 2rem;
+  padding: 0.5rem;
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+  justify-content: space-around;
   text-align: center;
   font-size: 1.2rem;
   font-weight: 600;
+  width: fit-content;
+  margin: auto;
+  border: none;
 }
 
 .compare{
@@ -288,6 +314,8 @@
   }
   .tabs {
     flex-direction: column;
+    margin-bottom: 0.5rem;
+    background-color: transparent;
   }
   .right-controls {
     flex-direction: column;
@@ -496,12 +524,12 @@ background-color: rgb(8, 51, 68);
 .indexpanel{
   width: 353px;
   height: 280px;
-  background: linear-gradient(rgb(190, 243, 243, .5), rgb(190, 243, 243, .5) 28%, rgb(190, 243, 243, .5) 100%);
-      box-shadow: 1px 1px 1px rgba(0, 54, 65, 0.3), 
-      -1px -1px 1px rgba(0, 68, 81, 0.3), 
-      inset -3px -3px 5px rgba(255, 255, 255, 0.4), 
-      inset 3px 3px 5px rgba(255, 255, 255, 0.4);
-      backdrop-filter: blur(2px);
+   background: rgb(255, 255, 255, .3);
+      box-shadow: 1px 1px 1px rgba(0, 54, 65, 0.1), 
+      -1px -1px 1px rgba(0, 68, 81, 0.1), -1px 1px 1px rgba(0, 68, 81, 0.1), 1px -1px 1px rgba(0, 68, 81, 0.1), 
+      inset -3px -3px 5px rgba(255, 255, 255, 0.1), 
+      inset 3px 3px 5px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
       
 }
 @media (max-width: 768px) {
@@ -513,8 +541,8 @@ background-color: rgb(8, 51, 68);
 }
 }
 .indexbtn{
-box-shadow: 2px 2px 2px rgba(0, 54, 65, 1), 
-    -2px -2px 2px rgba(0, 68, 81, 1),2px -2px 2px rgba(0, 54, 65, 1), 
+box-shadow: 2px 2px 2px rgba(0, 54, 65, .5), 
+    -2px -2px 2px rgba(0, 68, 81, .5),2px -2px 2px rgba(0, 54, 65, .5), 
     -2px 2px 2px rgba(0, 68, 81, 1),  
     inset -3px -3px 5px rgba(255, 255, 255, 0.2), 
     inset 3px 3px 5px rgba(255, 255, 255, 0.2);
@@ -535,15 +563,12 @@ box-shadow: 2px 2px 2px rgba(0, 54, 65, 1),
 @keyframes openAnimation {
   0% {
     visibility: visible;
-    opacity: 0;
     transform: scale(0.1);
   }
   70% {
-    opacity: 1;
     transform: scale(1) translateX(5%) translateY(-10%);
   }
   100% {
-    opacity: 1;
     transform: scale(1) translateX(5%) translateY(-10%);
   }
 }
@@ -551,11 +576,9 @@ box-shadow: 2px 2px 2px rgba(0, 54, 65, 1),
 @keyframes closeAnimation {
   0% {
     visibility: visible;
-    opacity: 1;
     transform: scale(1) translateX(5%) translateY(-10%);
   }
   100% {
-    opacity: 0;
     transform: scale(0.1);
   }
 }
@@ -632,8 +655,12 @@ box-shadow: 2px 2px 2px rgba(0, 54, 65, 1),
 }
 
 .dropdown-menu {
+  box-shadow: 1px 1px 1px rgba(0, 54, 65, 0.1), 
+  -1px -1px 1px rgba(0, 68, 81, 0.1), -1px 1px 1px rgba(0, 68, 81, 0.1), 1px -1px 1px rgba(0, 68, 81, 0.1), 
+  inset -3px -3px 5px rgba(255, 255, 255, 0.1), 
+  inset 3px 3px 5px rgba(255, 255, 255, 0.1);
   transform-origin: top;
-  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+  transition: transform 0.4s ease-out;
 }
 
 .dropdown-open {
@@ -649,22 +676,18 @@ box-shadow: 2px 2px 2px rgba(0, 54, 65, 1),
 @keyframes dropdownopen {
   0% {
     transform: scaleY(0);
-    opacity: 0;
   }
   100% {
     transform: scaleY(1);
-    opacity: 1;
   }
 }
 
 @keyframes dropdownclose {
   0% {
     transform: scaleY(1);
-    opacity: 1;
   }
   100% {
     transform: scaleY(0);
-    opacity: 0;
   }
 }
 

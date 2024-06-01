@@ -51,7 +51,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
     plugins: {
       title: {
         display: true,
-        text: title,
+        text: `${title} (${yAxisUnit})`,
         color: '#97266d',
         font: {
           size: `${18}vw`
@@ -139,9 +139,6 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
     viewMode,
     setViewMode,
     hasMultipleAttributes,
-    selectedAttribute,
-    setSelectedAttribute,
-    attributes,
     handleNodeSelection,
     nodeNames,
     nodeName,
@@ -154,7 +151,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
             <h4>Graph Mode</h4>
             <div className="tab-buttons">
               <button
-                className= {`tab single ${viewMode === 'single' ? 'active' : ''}`}
+                className={`tab single ${viewMode === 'single' ? 'active' : ''}`}
                 onClick={() => setViewMode('single')}
               >
                 Single View
@@ -168,7 +165,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
             </div>
           </div>
         )}
-        <div className={`right-controls ${viewMode === 'compare' ? 'flex-1' : '' }`}>
+        <div className={`right-controls ${viewMode === 'compare' ? 'flex-1' : ''}`}>
           {viewMode !== 'compare' && (
             <button
               className="btn btn-secondary"
@@ -206,18 +203,15 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       </div>
     );
   };
-  
-  
+
+  const latestData = allData[nodeType][nodeName][allData[nodeType][nodeName].length - 1];
 
   return (
     <div className="graph-container">
-      <ControlButtons 
-        viewMode={viewMode} 
-        setViewMode={setViewMode} 
-        hasMultipleAttributes={hasMultipleAttributes} 
-        selectedAttribute={selectedAttribute} 
-        setSelectedAttribute={setSelectedAttribute} 
-        attributes={attributes} 
+      <ControlButtons
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        hasMultipleAttributes={hasMultipleAttributes}
         handleNodeSelection={handleNodeSelection}
         nodeNames={nodeNames}
         nodeName={nodeName}
@@ -225,7 +219,6 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       />
       {(viewMode === 'single' || viewMode === 'all') && (
         <>
-          <h3 className="centered-title">{nodeName}</h3>
           <div className="centered-title">
             {(() => {
               switch (nodeType) {
@@ -239,7 +232,12 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
                   return nodeType;
               }
             })()}
-        </div>
+            {viewMode === 'single' && (
+              <span className="latest-data">
+                {` (Latest Reading ${latestData[selectedAttribute]} ${getUnit(selectedAttribute)})`}
+              </span>
+            )}
+          </div>
           {viewMode === 'single' && hasMultipleAttributes && (
             <div className="attribute-dropdown-container">
               <select
@@ -258,8 +256,11 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       {viewMode === 'all' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {attributes.map(attr => (
-            <div key={attr} className="graph-item">
+            <div key={attr} className="graph-item all-mode-item">
               <Line data={chartDataAll(attr)} options={chartOptions(attr, getUnit(attr))} height={400} />
+              <div className="latest-data">
+                {`Latest Reading: ${latestData[attr]} ${getUnit(attr)}`}
+              </div>
             </div>
           ))}
         </div>
@@ -267,6 +268,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
         <>
           {viewMode === 'single' && (
             <Line
+              className='graph-item'
               data={chartDataSingle}
               options={chartOptions(selectedAttribute, getUnit(selectedAttribute))}
               height={400}
@@ -292,18 +294,18 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
               </div>
               <div className='grow'>
                 <h3 className="centered-title">
-                {(() => {
-                  switch (nodeType) {
-                    case 'water':
-                      return 'Water Node';
-                    case 'borewell':
-                      return 'Borewell Node';
-                    case 'tank':
-                      return 'Tank Node';
-                    default:
-                      return nodeType;
-                }
-              })()}
+                  {(() => {
+                    switch (nodeType) {
+                      case 'water':
+                        return 'Water Node';
+                      case 'borewell':
+                        return 'Borewell Node';
+                      case 'tank':
+                        return 'Tank Node';
+                      default:
+                        return nodeType;
+                    }
+                  })()}
                 </h3>
                 <div className="compare-dropdown-container">
                   <select
@@ -317,6 +319,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
                   </select>
                 </div>
                 <Line
+                className='graph-item'
                   data={chartDataSingle}
                   options={chartOptions(selectedAttribute, getUnit(selectedAttribute))}
                   height={400}
@@ -330,4 +333,4 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
   );
 };
 
-export default NodeGraph;
+export default NodeGraph;
