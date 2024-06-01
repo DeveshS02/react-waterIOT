@@ -13,7 +13,7 @@ import icon_tanker_inactive from '../images/not_watertank.png';
 import icon_waternode_digital from '../images/sheni-new.png';
 import icon_waternode_digital_inactive from '../images/not-sheni-new.png';
 
-const MapComponent = ({ selectedOptions, setIsNavbarVisible, nodes, latestData, data, bounds, loading }) => {
+const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loading, setNavClosing, setNavOpening }) => {
   const [selectedNode, setSelectedNode] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
 
   const iconConfig = {
@@ -66,12 +66,14 @@ const MapComponent = ({ selectedOptions, setIsNavbarVisible, nodes, latestData, 
         analogOrDigital: null
       });
     }
-    setIsNavbarVisible(false);  // Hide Navbar when node is clicked
+    setNavClosing(true);
+    setNavOpening(false);
   };
 
   const handleModalClose = () => {
     setSelectedNode({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
-    setIsNavbarVisible(true);  // Show Navbar when modal is closed
+    setNavOpening(true);
+    setNavClosing(false);
   };
 
   const getUnit = (key) => {

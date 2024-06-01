@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
 import DataFetcher from "./DataFetcher";
+import NodeGraph from './Nodegraph';  
+import Modal from './Modal'; 
 
 const tabs = ["AllNodes", "WaterMeter", "WaterTank", "Borewell"];
 
-const StatusNode = ({ onClose, data }) => {
+const StatusNode = ({ onClose, data , nodes, setNavOpening, setNavClosing}) => {
   const [activeTab, setActiveTab] = useState("AllNodes");
   const [filter, setFilter] = useState("All");
   const [isClosing, setIsClosing] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Initialize based on current window size
+  const [selectedDetail, setSelectedDetail] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
+  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
+  const [isDataFetcherVisible, setIsDataFetcherVisible] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,12 +26,30 @@ const StatusNode = ({ onClose, data }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isClosing) {
+      setIsAnimationComplete(false);
+      const timer = setTimeout(() => {
+        setIsAnimationComplete(true);
+      }, 500); // Match this with your animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [isClosing]);
+
   const handleClose = () => {
+    setIsDataFetcherVisible(false); // Hide DataFetcher immediately
     setIsClosing(true);
     setTimeout(() => {
       onClose();
       setIsClosing(false);
-    }, 500); // Match this with your animation duration
+      setIsDataFetcherVisible(true); // Reset for next open
+    }, 1200); // Match this with your animation duration
+  };
+
+  const handleModalClose = () => {
+    setSelectedDetail({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
+    setNavOpening(true);
+    setNavClosing(false);
   };
 
   return (
@@ -117,10 +140,32 @@ const StatusNode = ({ onClose, data }) => {
             </select>
           </div>
         </div>
-        <div className="overflow-y-auto h-4/5 bg-transparent rounded p-4">
-          <DataFetcher activeTab={activeTab} filter={filter} allNodes={data} />
+        <div className="overflow-y-auto h-4/5 bg-transparent rounded p-4 datafetcher">
+        {isAnimationComplete && isDataFetcherVisible && (
+            <DataFetcher
+              activeTab={activeTab}
+              filter={filter}
+              allNodes={data}
+              nodes={nodes}
+              setSelectedDetail={setSelectedDetail}
+              setNavClosing={setNavClosing}
+              setNavOpening={setNavOpening}
+           />
+           )}
         </div>
       </div>
+
+      {selectedDetail.data && (
+        <Modal onClose={handleModalClose}>
+          <NodeGraph 
+            data={selectedDetail.data} 
+            attributes={selectedDetail.attributes} 
+            nodeType={selectedDetail.type} 
+            analogOrDigital={selectedDetail.analogOrDigital} 
+            allData={data} 
+            nodeName={selectedDetail.name} />
+        </Modal>
+      )}
     </div>
   );
 };

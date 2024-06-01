@@ -6,10 +6,14 @@ const ContentDisplay = ({
   tankData,
   WaterMeterData,
   borewellData,
+  nodes,
+  data,
+  setSelectedDetail,
+  setNavClosing,
+  setNavOpening
 }) => {
   const containerRef = useRef(null);
   const [allNodesData, setAllNodesData] = useState([]);
-
   useEffect(() => {
     const combinedData = [...WaterMeterData, ...tankData, ...borewellData];
     setAllNodesData(combinedData);
@@ -44,6 +48,38 @@ const ContentDisplay = ({
     }
   }, []);
 
+  const handleNodeClick = (nodeType, nodeName) => {
+    const nodeData = data[nodeType][nodeName];
+    if (nodeType === 'water') {
+      const node = nodes.water.find(node => node.name === nodeName);
+      const isAnalog = node?.parameters.includes('isanalog');
+      const analogOrDigital = isAnalog ? 'analog' : 'digital';
+      
+      const attributes = !isAnalog
+        ? Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated')
+        : Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated' && key !== 'pressure' && key !== 'pressurevoltage');
+      
+      setSelectedDetail({
+        data: nodeData,
+        type: nodeType,
+        attributes: attributes,
+        isAnalog: isAnalog,
+        name: nodeName,
+        analogOrDigital: analogOrDigital
+      });
+    } else {
+      setSelectedDetail({
+        data: nodeData,
+        type: nodeType,
+        attributes: Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated'),
+        isAnalog: false,
+        name: nodeName,
+        analogOrDigital: null
+      });
+    }
+    setNavClosing(true);
+    setNavOpening(false);
+  };
   const renderNode = (item, type) => (
     <div className="flex flex-col justify-center pb-3">
       <div className="flex flex-col headingnode items-center justify-center mb-4">
@@ -69,7 +105,8 @@ const ContentDisplay = ({
               <span className="value">{item.pressure} cbar</span>
             </div>
             <div>
-              <button className="text-white details  rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20">
+              <button className="text-white details  rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20"
+              onClick={() =>{handleNodeClick("water",item.name)}}>
                 Details
               </button>
             </div>
@@ -94,7 +131,8 @@ const ContentDisplay = ({
               <span className="value">{item.waterlevel} cm</span>
             </div>
             <div>
-              <button className="text-white details rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20">
+              <button className="text-white details rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20"
+              onClick={() =>{handleNodeClick("tank",item.name)}}>
                 Details
               </button>
             </div>
@@ -108,7 +146,8 @@ const ContentDisplay = ({
             <span className="value">{item.waterlevel} cm</span>
           </div>
           <div>
-            <button className="text-white details rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20">
+            <button className="text-white details rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20"
+            onClick={() =>{handleNodeClick("borewell",item.name)}}>
               Details
             </button>
           </div>

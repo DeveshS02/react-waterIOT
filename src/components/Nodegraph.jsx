@@ -219,7 +219,12 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       />
       {(viewMode === 'single' || viewMode === 'all') && (
         <>
-          <div className="centered-title">
+          <div className={`centered-title ${viewMode === 'single' ? 'flex justify-between' : ''}`}>
+          {viewMode === 'single' && (
+              <span className="latest-data opacity-0">
+                this is how to scam bruh 
+              </span>
+            )}
             {(() => {
               switch (nodeType) {
                 case 'water':

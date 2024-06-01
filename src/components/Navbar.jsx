@@ -9,20 +9,28 @@ const Navbar = ({
   selectedOptions,
   toggleOption,
   data,
+  nodes,
+  isNavClosing,
+  isNavOpening,
+  setNavOpening,
+  setNavClosing
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showContainer, setShowContainer] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false); // Track if the user has interacted with the menu
 
   useEffect(() => {
-    if (!isMenuOpen) {
-      setIsAnimating(true);
-      const timer = setTimeout(() => {
-        setIsAnimating(false);
-      }, 500);
-      return () => clearTimeout(timer);
+    if (hasInteracted) {
+      if (!isMenuOpen) {
+        setIsAnimating(true);
+        const timer = setTimeout(() => {
+          setIsAnimating(false);
+        }, 550);
+        return () => clearTimeout(timer);
+      }
     }
-  }, [isMenuOpen]);
+  }, [isMenuOpen, hasInteracted]);
 
   const handleButtonClick = () => {
     setShowContainer(true);
@@ -33,6 +41,11 @@ const Navbar = ({
     setShowContainer(false);
   };
 
+  const handleMenuToggle = () => {
+    setHasInteracted(true); // Mark that the user has interacted with the menu
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   const dropdownItems = options.map((option) => option.label);
 
   return (
@@ -40,7 +53,7 @@ const Navbar = ({
       <nav
         className={`navbar-glassmorphism nav-text w-[98%] m-auto shadow-lg ${
           isMenuOpen || isAnimating ? "rounded" : "rounded-full"
-        }`}
+        } ${isNavClosing ? "goUp" :'' } ${isNavOpening ? 'goDown' : ''}`}
       >
         <div className="container py-3 flex justify-between items-center">
           <div className="pl-10 flex items-center">
@@ -52,7 +65,7 @@ const Navbar = ({
           <div className="mr-5 md:hidden">
             <button
               className="text-white focus:outline-none"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={handleMenuToggle}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -129,10 +142,10 @@ const Navbar = ({
         </div>
       </nav>
       {showContainer && (
-        <StatusNode onClose={handleCloseButtonClick} data={data} />
+        <StatusNode onClose={handleCloseButtonClick} data={data} nodes={nodes} setNavClosing={setNavClosing} setNavOpening={setNavOpening}  />
       )}
     </div>
   );
 };
 
-export default Navbar;
+export default Navbar;

@@ -27,7 +27,8 @@ const App = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+  const [isNavClosing, setNavClosing]= useState(false);
+  const [isNavOpening, setNavOpening]= useState(false);
 
   const [nodes, setNodes] = useState({ tank: [], borewell: [], water: [] });
   const [data, setData] = useState({ tank: [], borewell: [], water: [] });
@@ -189,25 +190,31 @@ const App = () => {
 
   return (
     <div>
-      {isNavbarVisible && (
+      
         <Navbar
           dropdownLabel={getDropdownLabel()}
           options={options}
           selectedOptions={selectedOptions}
           toggleOption={toggleOption}
           data={data}
+          nodes={nodes}
+          isNavClosing={isNavClosing}
+          isNavOpening={isNavOpening}
+          setNavClosing={setNavClosing}
+          setNavOpening={setNavOpening}
         />
-      )}
+      
 
       <MapComponent
         selectedOptions={selectedOptions}
-        setIsNavbarVisible={setIsNavbarVisible}
         location="IIITH"
         nodes={nodes}
         latestData={latestData}
         data={data}
         bounds={bounds}
         loading={loading}
+        setNavClosing={setNavClosing}
+        setNavOpening={setNavOpening}
       />
 
       <div className="fixed bottom-4 left-4 p-2 z-50">

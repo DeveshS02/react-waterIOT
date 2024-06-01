@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ContentDisplay from "./ContentDisplay";
 
-const DataFetcher = ({ activeTab, filter, allNodes }) => {
+const DataFetcher = ({ activeTab, filter, allNodes, nodes, setSelectedDetail, setNavOpening, setNavClosing }) => {
   const [tankData, settankData] = useState([]);
   const [WaterMeterData, setWaterMeterData] = useState([]);
   const [borewellData, setborewellData] = useState([]);
@@ -101,6 +101,11 @@ const DataFetcher = ({ activeTab, filter, allNodes }) => {
       tankData={tankData}
       WaterMeterData={WaterMeterData}
       borewellData={borewellData}
+      nodes= {nodes}
+      data={allNodes}
+      setSelectedDetail={setSelectedDetail}
+      setNavClosing={setNavClosing}
+      setNavOpening={setNavOpening}
     />
   );
 };
