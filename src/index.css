@@ -2,7 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-  /* animation and styles for Modal.jsx */
+.bg-custom{
+  background-color: #123462
+}
+.custom-button{
+    color: rgb(63, 64, 61);
+    transition: transform 0.5s, box-shadow 0.3s;
+    display: flex;
+  }
+
+.custom-button:hover{
+    transform: scale(1.05);
+  }
+  
+.custom-button-checked {
+     border-radius: 10px;
+    box-shadow:  inset 0 -7px 10px rgba(255, 255, 255, 0.1), 
+     0 2px 10px rgba(0, 0, 0, 0.2);
+    color: black;
+    background-color: rgb(251, 251, 247);
+  }
+
+  /* modal css */
 
   .goUp{
     transform: translate(0,-150%);
@@ -30,367 +51,365 @@
     }
     to {
       transform: translate(-50%, -50%) scale(0.1);
-      opacity: 0;
-    }
-  }
-  
-  .modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    height: 90vh;
-    width: 90vw;
-    overflow-y: auto;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 1rem;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 0.25rem 0.5rem rgba(28, 79, 93, 0.1);
-    padding: 2rem;
-    z-index: 1000;
-    transform: translate(-50%, -50%) scale(0.1);
-    opacity: 0;
-    animation: expandIn 0.5s forwards;
-  }
-  
-  .modal.close {
-    animation: shrinkOut 0.5s forwards;
-  }
-  
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 999;
-    opacity: 1;
-    transition: opacity 0.5s;
-  }
-  
-  .modal-overlay.hidden {
-    opacity: 0;
-    transition: opacity 0.5s;
-  }
-  
-  .modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    color: #97266d;
-    cursor: pointer;
-  }
-  
+      opacity:0;
+  } 
+}.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: 90vh;
+  width: 90vw;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 1rem;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 0.25rem 0.5rem rgba(28, 79, 93, 0.1);
+  padding: 2rem;
+  z-index: 1000;
+  transform: translate(-50%, -50%) scale(0.1);
+  opacity: 0;
+  animation: expandIn 0.5s forwards;
+}
 
-  /* custom loading animation App.jsx*/
+.modal.close {
+  animation: shrinkOut 0.5s forwards;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #97266d;
+  cursor: pointer;
+}
+
+
+/* custom loading animation App.jsx*/
 
 .loader {
-  border: 8px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 8px solid #3498db;
-  width: 60px;
-  height: 60px;
-  animation: spin 2s linear infinite;
-  display: inline-block;
+border: 8px solid #f3f3f3;
+border-radius: 50%;
+border-top: 8px solid #3498db;
+width: 55px;
+height: 55px;
+animation: spin 2s linear infinite;
+display: inline-block;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
 }
 
-/*css for  all views in graph mode Nodegraph.jsx*/
+/*css for  all views in graph mode Nodegraph.jsx */
 
 .graph-container {
-  position: relative;
-  height: 60vh;
+position: relative;
+height: 60vh;
 }
 
 .graph-item{
-  max-height: 450px;
+max-height: 450px;
 }
 
 .all-mode-item{
-  margin-top: 2rem;
+margin-top: 2rem;
 }
 
 .latest-data{
-  text-align: center;
-  font-size: 1.1rem;
+text-align: center;
+font-size: 1.1rem;
 }
 .controls {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  align-items: center;
-  width: 93%;
-  margin: auto;
+display: flex;
+justify-content: space-between;
+flex-wrap: wrap;
+align-items: center;
+width: 93%;
+margin: auto;
 }
 
 .tabs {
-  background-color: #D0D8A2;
-  padding-top: 0.3rem;
-  border-radius: 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 20vw;
-  min-width: 300px;
+background-color: #D0D8A2;
+padding-top: 0.3rem;
+border-radius: 3rem;
+display: flex;
+flex-direction: column;
+align-items: center;
+width: 20vw;
+min-width: 300px;
 }
 
 .tabs h4 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: auto;
+font-size: 1.2rem;
+font-weight: 600;
+margin: auto;
 }
 
 .tab-buttons {
-  margin-top: 0.5rem;
-  display: flex;
-  width: 100%;
-  position: relative;
+margin-top: 0.5rem;
+display: flex;
+width: 100%;
+position: relative;
 }
 
 .tab {
-  flex: 1;
-  font-size: 0.95rem;
-  padding: 0.3rem;
-  border: 0.1rem solid black;
-  border-radius: 3rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  text-align: center;
-  position: relative;
-  z-index: 1;
-  background-color: white;
+flex: 1;
+font-size: 0.95rem;
+padding: 0.3rem;
+border: 0.1rem solid black;
+border-radius: 3rem;
+cursor: pointer;
+transition: background-color 0.3s ease, transform 0.3s ease;
+text-align: center;
+position: relative;
+z-index: 1;
+background-color: white;
 }
 
 .tab.single {
-  left: 3%;
+left: 3%;
 }
 
 .tab.multi {
-  right: 3%;
+right: 3%;
 }
 
 .tab.active {
-  z-index: 2;
+z-index: 2;
 }
 
 .tab.single.active {
-  background-color: #FFBD59;
-  z-index: 3;
+background-color: #FFBD59;
+z-index: 3;
 }
 
 .tab.multi.active {
-  background-color: #96E0BC;
-  z-index: 3;
+background-color: #96E0BC;
+z-index: 3;
 }
 
 .tab:hover {
-  transform: scale(1.05);
+transform: scale(1.05);
 }
 
 .right-controls {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
+display: flex;
+justify-content: space-between;
+gap: 0.5rem;
 }
 
 .transparent-dropdown {
-  background-color: transparent;
-  border: 0.1rem solid #97266d;
-  border-radius: 1rem;
-  color: #97266d;
-  padding: 0.5rem;
+background-color: transparent;
+border: 0.1rem solid #97266d;
+border-radius: 1rem;
+color: #97266d;
+padding: 0.5rem;
 }
 
 .transparent-dropdown option {
-  background-color: #fff;
-  color: #000;
+background-color: #fff;
+color: #000;
 }
 
 .btn {
-  background-color: #D6EDD0;
-  color: #000;
-  border: 0.1rem solid black;
-  border-radius: 3rem;
-  font-weight: 600;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+background-color: #D6EDD0;
+color: #000;
+border: 0.1rem solid black;
+border-radius: 3rem;
+font-weight: 600;
+padding: 0.5rem 1rem;
+cursor: pointer;
+transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .btn:hover {
-  background-color: #D6EDD0;
-  transform: scale(1.05);
+background-color: #D6EDD0;
+transform: scale(1.05);
 }
 
 .attribute-dropdown-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 0.5rem;
+display: flex;
+justify-content: center;
+margin-top: 0.5rem;
 }
 
 .compare-dropdown-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 0.5rem;
+display: flex;
+justify-content: flex-end;
+margin-top: 0.5rem;
 }
 
 .controls select {
-  font-size: 1rem;
+font-size: 1rem;
 }
 
 .remove-btn {
-  background: none;
-  border: none;
-  color: #97266d;
-  cursor: pointer;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+background: none;
+border: none;
+color: #97266d;
+cursor: pointer;
+margin-left: 0.5rem;
+margin-right: 0.5rem;
 }
 
 .remove-btn:hover {
-  color: red;
+color: red;
 }
 
 .selected-nodes {
-  width: 17%;
-  height: 100%;
-  overflow-y: auto;
-  word-break: break-all;
-  padding: 0.5rem;
-  border-right: 0.09rem solid #97266d;
-  margin-top: 2rem;
+width: 17%;
+height: 100%;
+overflow-y: auto;
+word-break: break-all;
+padding: 0.5rem;
+border-right: 0.09rem solid #97266d;
+margin-top: 2rem;
 }
 
 .node-item {
-  margin-top: 0.6rem;
-  padding: 0.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: none;
-  border-radius: 1rem;
-  background-color: rgba(193, 189, 189, 0.558);
+margin-top: 0.6rem;
+padding: 0.5rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border: none;
+border-radius: 1rem;
+background-color: rgba(193, 189, 189, 0.558);
 }
 
 .node-color-line {
-  min-width: 25%;
-  height: 5px;
-  margin-top: 5px;
+min-width: 25%;
+height: 5px;
+margin-top: 5px;
 }
 
 .compare-view-container {
-  display: flex;
-  height: 100%;
+display: flex;
+height: 100%;
 }
 
 .centered-title {
-  border-radius: 3rem;
-  margin-top: 0.4rem;
-  padding: 0.5rem;
-  padding-left: 1.2rem;
-  padding-right: 1.2rem;
-  text-align: center;
-  font-size: 1.2rem;
-  font-weight: 600;
-  width: 100%;
+border-radius: 3rem;
+margin-top: 0.4rem;
+padding: 0.5rem;
+padding-left: 1.2rem;
+padding-right: 1.2rem;
+text-align: center;
+font-size: 1.2rem;
+font-weight: 600;
+width: 100%;
 }
 
 .compare{
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
+width: 100%;
+display: flex;
+justify-content: space-between;
 }
 
 @media (max-width: 768px) {
-  .controls {
-    flex-direction: column;
-    align-items: center;
-  }
-  .tabs {
-    flex-direction: column;
-    margin-bottom: 0.5rem;
-    background-color: transparent;
-  }
-  .right-controls {
-    flex-direction: column;
-    align-items: center;
-  }
-  .compare {
-    flex-direction: column;
-  }
-  .drops {
-    flex-direction: column;
-  }
-  .controls button,
-  .controls select {
-    margin-right: 0;
-    margin-bottom: 1rem;
-  }
+.controls {
+  flex-direction: column;
+  align-items: center;
+}
+.tabs {
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+  background-color: transparent;
+}
+.right-controls {
+  flex-direction: column;
+  align-items: center;
+}
+.compare {
+  flex-direction: column;
+}
+.drops {
+  flex-direction: column;
+}
+.controls button,
+.controls select {
+  margin-right: 0;
+  margin-bottom: 1rem;
+}
 
-  .controls .transparent-dropdown:first-of-type {
-    align-self: flex-start;
-  }
+.controls .transparent-dropdown:first-of-type {
+  align-self: flex-start;
+}
 
-  .controls .transparent-dropdown:last-of-type {
-    align-self: flex-end;
-  }
+.controls .transparent-dropdown:last-of-type {
+  align-self: flex-end;
+}
 
-  .controls .btn-secondary {
-    align-self: center;
-    margin-bottom: 0;
-  }
+.controls .btn-secondary {
+  align-self: center;
+  margin-bottom: 0;
+}
 
-  .selected-nodes {
-    width: 100%;
-    max-width: none;
-    border-right: none;
-    padding-left: 0;
-    border-bottom: 1px #274068 solid;
-    border-top: 1px #274068 solid;
-  }
-  .compare-view-container {
-    flex-direction: column;
-    height: auto;
-  }
+.selected-nodes {
+  width: 100%;
+  max-width: none;
+  border-right: none;
+  padding-left: 0;
+  border-bottom: 1px #274068 solid;
+  border-top: 1px #274068 solid;
+}
+.compare-view-container {
+  flex-direction: column;
+  height: auto;
+}
 
-  .attribute-dropdown-container,
-  .compare-dropdown-container {
-    justify-content: center;
-  }
-  .exit-comparison-btn {
-    position: static;
-    margin-top: 1rem;
-  }
+.attribute-dropdown-container,
+.compare-dropdown-container {
+  justify-content: center;
+}
+.exit-comparison-btn {
+  position: static;
+  margin-top: 1rem;
+}
 }
 
 
 /*css for custom scrollbar in modal graph Modal.jsx */
 
 .nodeGraph::-webkit-scrollbar {
-  width: 8px; 
+width: 8px; 
 }
 
 .nodeGraph::-webkit-scrollbar-track {
-  background: transparent; 
+background: transparent; 
 }
 
 .nodeGraph::-webkit-scrollbar-thumb {
-  background-color: #97266e92;
-  border-radius: 8px;
-  border: 3px solid transparent; 
+background-color: #97266e92;
+border-radius: 8px;
+border: 3px solid transparent; 
 }
 
 .nodeGraph::-webkit-scrollbar-thumb:hover {
-  background: #750048; 
+background:#750048;
 }
 
-/* css for status of nodes ContentDisplay.jsx */
+/* css for status of nodes */
 
 .bg-custom{
   background-color: #123462
@@ -522,7 +541,8 @@ background-color: rgb(8, 51, 68);
 }
 
 
-/* css for index button and filter panel IndexPanel.jsx */
+/* CSS for Index */
+
 
 .indexpanel{
   width: 353px;
@@ -586,96 +606,53 @@ box-shadow: 2px 2px 2px rgba(0, 54, 65, .5),
   }
 }
 
-  
 
-/* glassy style and gradient bg for navbar navbar.jsx*/
+/*CSS for navbar */
+
 .navbar-glassmorphism {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  position: relative;
-  transition: all 0.5s linear;
-  overflow: visible;
-  }
-  
-  .navbar-glassmorphism::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-    backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  background: linear-gradient(130deg, rgba(10, 184, 219, 0.6), #223bb978, rgba(189, 196, 208, 0.6));
-  background-size: 200% 200%;
-  z-index: -1;
-  animation: gradientAnimation 10s linear infinite alternate-reverse; 
-  pointer-events: none; 
-  border-radius: inherit;
-  }
-  
-  @keyframes gradientAnimation {
-  0% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-  }
-  .navbar-glassmorphism .hover\:text-blue-300:hover {
-  color: #DB6705
-  }
-  
-  .navbar-glassmorphism .hover\:bg-blue-700:hover {
-  background-color: #1e40af;
-  }
-  
-  .nav-text{
-  color:#05337d;
-  }
-  
-
-/* css for selection of nodes dropdown animation */
-@keyframes dropdownOpen {
-  0% {
-    transform: scaleY(0);
-    opacity: 0;
-  }
-  100% {
-    transform: scaleY(1);
-    opacity: 1;
-  }
+background: rgba(255, 255, 255, 0.1);
+border: 1px solid rgba(255, 255, 255, 0.18);
+position: relative;
+overflow: visible;
+transition: transform 0.5s ease-in;
 }
 
-@keyframes dropdownClose {
-  0% {
-    transform: scaleY(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scaleY(0);
-    opacity: 0;
-  }
+.navbar-glassmorphism::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+  backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+background: linear-gradient(130deg, rgba(10, 184, 219, 0.6), #223bb978, rgba(189, 196, 208, 0.6));
+background-size: 200% 200%;
+z-index: -1;
+animation: gradientAnimation 10s linear infinite alternate-reverse; 
+pointer-events: none; 
+border-radius: inherit;
 }
 
-.dropdown-menu {
-  box-shadow: 1px 1px 1px rgba(0, 54, 65, 0.1), 
-  -1px -1px 1px rgba(0, 68, 81, 0.1), -1px 1px 1px rgba(0, 68, 81, 0.1), 1px -1px 1px rgba(0, 68, 81, 0.1), 
-  inset -3px -3px 5px rgba(255, 255, 255, 0.1), 
-  inset 3px 3px 5px rgba(255, 255, 255, 0.1);
-  transform-origin: top;
-  transition: transform 0.4s ease-out;
+@keyframes gradientAnimation {
+0% {
+  background-position: 100% 50%;
+}
+100% {
+  background-position: 0% 50%;
+}
+}
+.navbar-glassmorphism .hover\:text-blue-300:hover {
+color: #DB6705
 }
 
-.dropdown-open {
-  animation: dropdownOpen 0.4s forwards;
+.navbar-glassmorphism .hover\:bg-blue-700:hover {
+background-color: #1e40af;
 }
 
-.dropdown-closed {
-  animation: dropdownClose 0.4s forwards;
+.nav-text{
+color:#05337d;
 }
-
-/* css for mobile animation for dropdown */
 
 @keyframes dropdownopen {
   0% {
@@ -689,9 +666,11 @@ box-shadow: 2px 2px 2px rgba(0, 54, 65, .5),
 @keyframes dropdownclose {
   0% {
     transform: scaleY(1);
+    opacity: 1;
   }
   100% {
     transform: scaleY(0);
+    opacity: 0;
   }
 }
 
@@ -706,4 +685,45 @@ box-shadow: 2px 2px 2px rgba(0, 54, 65, .5),
 
 .navbar-closed {
   animation: dropdownclose 0.6s forwards;
+}
+
+
+
+
+
+ 
+/*css for dropdown  */
+
+@keyframes dropdownOpen {
+  0% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes dropdownClose {
+  0% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0);
+  }
+}
+.dropdown-menu {
+  box-shadow: 1px 1px 1px rgba(0, 54, 65, 0.1), 
+  -1px -1px 1px rgba(0, 68, 81, 0.1), -1px 1px 1px rgba(0, 68, 81, 0.1), 1px -1px 1px rgba(0, 68, 81, 0.1), 
+  inset -3px -3px 5px rgba(255, 255, 255, 0.1), 
+  inset 3px 3px 5px rgba(255, 255, 255, 0.1);
+  transform-origin: top;
+  transition: transform 0.4s ease-out;
+}
+
+.dropdown-open {
+  animation: dropdownOpen 0.6s forwards;
+}
+
+.dropdown-closed {
+  animation: dropdownClose 0.6s forwards;
 }

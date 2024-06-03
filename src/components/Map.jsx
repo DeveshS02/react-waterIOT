@@ -12,6 +12,7 @@ import icon_waternode_inactive from '../images/not-water-meter-new.png';
 import icon_tanker_inactive from '../images/not_watertank.png';
 import icon_waternode_digital from '../images/sheni-new.png';
 import icon_waternode_digital_inactive from '../images/not-sheni-new.png';
+import image2 from "../images/hydrowfinal.png";
 
 const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loading, setNavClosing, setNavOpening }) => {
   const [selectedNode, setSelectedNode] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
@@ -118,7 +119,12 @@ const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loadin
   return (
     <div className="w-[100vw] h-[100vh]">
       {loading ? (
-        <div className="flex justify-center items-center h-full"><div className="loader"></div></div>
+        <div className="flex justify-center items-center h-full">
+          <div className="flex flex-col justify-center items-center">
+            <img src={image2} alt="hydrow Logo" className="h-28  mb-14" />
+            <div className="loader"></div>
+          </div>
+        </div>
       ) : (
         <MapContainer
           className="w-full h-full z-10"

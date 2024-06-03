@@ -4,7 +4,7 @@ import IndexButton from "./components/IndexButton";
 import IndexPanel from "./components/IndexPanel";
 import MapComponent from "./components/Map"; // Ensure the import is correct
 import waterTankImage from "./images/water_tank.png";
-import imagepath from "./images/intro.png";
+import imagepath from "./images/Introfina.png";
 import prawahImage from "./images/water-meter-new.png";
 import shenitechImage from "./images/sheni-new.png";
 import sumpImage from "./images/sump.png";
@@ -44,9 +44,9 @@ const App = () => {
     setLoading(true);
     try {
       const [tankNodes, borewellNodes, waterNodes] = await Promise.all([
-        fetch_data("https://api-gateway-green.vercel.app/water/staticnodesC"),
-        fetch_data("https://api-gateway-green.vercel.app/water/borewellnodesC"),
-        fetch_data("https://api-gateway-green.vercel.app/water/waterC"),
+        fetch_data("https://gateway-gamma-taupe.vercel.app/water/staticnodesC"),
+        fetch_data("https://gateway-gamma-taupe.vercel.app/water/borewellnodesC"),
+        fetch_data("https://gateway-gamma-taupe.vercel.app/water/waterC"),
       ]);
 
       const filterNodesByLocation = (nodes) =>
@@ -97,9 +97,9 @@ const App = () => {
   const fetchData = useCallback(async () => {
     try {
       const [tankData, borewellData, waterData] = await Promise.all([
-        fetch_data("https://api-gateway-green.vercel.app/water/tankdata"),
-        fetch_data("https://api-gateway-green.vercel.app/water/borewellgraphC"),
-        fetch_data("https://api-gateway-green.vercel.app/water/latestwaterC"),
+        fetch_data("https://gateway-gamma-taupe.vercel.app/water/tankdata"),
+        fetch_data("https://gateway-gamma-taupe.vercel.app/water/borewellgraphC"),
+        fetch_data("https://gateway-gamma-taupe.vercel.app/water/latestwaterC"),
       ]);
       setData({
         tank: renameKeys(tankData),

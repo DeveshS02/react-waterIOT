@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import image from "../images/iiit-new.png";
+import image2 from "../images/hydrowfinal.png";
 import Dropdown from "./Dropdown";
 import StatusNode from "./status_node";
 
@@ -56,11 +57,14 @@ const Navbar = ({
         } ${isNavClosing ? "goUp" :'' } ${isNavOpening ? 'goDown' : ''}`}
       >
         <div className="container py-3 flex justify-between items-center">
-          <div className="pl-10 flex items-center">
+          <div className=" pl-5 md:pl-8 flex items-center">
             <a href="/">
-              <img src={image} alt="IIIT Logo" className="h-10 mr-8" />
+              <img src={image} alt="IIIT Logo" className="h-8 md:h-10 mr-0 md:mr-1" />
             </a>
-            <h1 className="ml-1 text-3xl tracking-wide font-sans">WaterIoT</h1>
+            <a href="http://hydrowverse.com/">
+              <img src={image2} alt="hydrow Logo" className="h-8 md:h-10 mr-0 md:mr-4" />
+            </a>
+            <h1 className="ml-0 md:ml-1 text-3xl tracking-wide font-sans">WaterIoT</h1>
           </div>
           <div className="mr-5 md:hidden">
             <button
