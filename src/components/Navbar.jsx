@@ -66,6 +66,7 @@ const Navbar = ({
             </a>
             <h1 className="ml-0 md:ml-1 text-3xl tracking-wide font-sans">WaterIoT</h1>
           </div>
+          <div></div>
           <div className="mr-5 md:hidden">
             <button
               className="text-white focus:outline-none"

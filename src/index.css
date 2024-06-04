@@ -546,7 +546,7 @@ background-color: rgb(8, 51, 68);
 
 .indexpanel{
   width: 353px;
-  height: 280px;
+  min-height: fit-content;
    background: rgb(255, 255, 255, .3);
       box-shadow: 1px 1px 1px rgba(0, 54, 65, 0.1), 
       -1px -1px 1px rgba(0, 68, 81, 0.1), -1px 1px 1px rgba(0, 68, 81, 0.1), 1px -1px 1px rgba(0, 68, 81, 0.1), 

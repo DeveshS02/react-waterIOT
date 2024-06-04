@@ -13,6 +13,7 @@ import pipelineImage from "./images/pipeline.png";
 import fetch_data from "./utils/fetch_data";
 import extractData from "./utils/extract_last_array";
 import ImageDisplay from "./components/ImageDisplay"; // Import the new component
+import Login from "./components/Login";
 
 const options = [
   { id: 1, label: "Water Tank", image: waterTankImage },
@@ -24,6 +25,14 @@ const options = [
 ];
 
 const App = () => {
+  const [authenticated, setAuthenticated] = useState(false);
+
+  const handleLogin = (isAuthenticated, userData) => {
+    setAuthenticated(isAuthenticated);
+    if (isAuthenticated) {
+      console.log(userData)
+    }
+  };
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -190,8 +199,9 @@ const App = () => {
 
   return (
     <div>
-      
-        <Navbar
+        
+        <>
+          <Navbar
           dropdownLabel={getDropdownLabel()}
           options={options}
           selectedOptions={selectedOptions}
@@ -243,6 +253,8 @@ const App = () => {
           <ImageDisplay imageSrc={imagepath} altText="Your Alt Text" />
         </div>
       )}
+        </>
+      
     </div>
   );
 };
