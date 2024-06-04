@@ -109,6 +109,54 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
     }
   });
 
+  const getTotalFLowWaterNode = (nodeType, nodeName) => {
+    const data = allData[nodeType][nodeName];
+  
+    if (!data || data.length === 0) {
+      console.error('No data available for the given node.');
+      return null;
+    }
+  
+    // Get the current date at 00:00 (midnight)
+    const currentDate = new Date();
+    const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
+  
+    // Get the latest entry (last entry in the array)
+    const latestEntry = data[data.length - 1];
+    const latestEntryDate = new Date(latestEntry.Last_Updated);
+  
+    // Check if the latest entry is from the current day
+    if (latestEntryDate < startOfDay || latestEntryDate >= new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000)) {
+      console.error('Latest entry is not from the current day.');
+      return null;
+    }
+  
+    // Initialize the closest to midnight entry
+    let closestToMidnight = null;
+  
+    // Iterate from the end of the array to find the entry closest to midnight
+    for (let i = data.length - 1; i >= 0; i--) {
+      const entryDate = new Date(data[i].Last_Updated);
+  
+      // Stop when we find an entry from the previous day
+      if (entryDate < startOfDay) {
+        break;
+      }
+  
+      // Update the closest to midnight entry
+      closestToMidnight = data[i];
+    }
+  
+    // If we don't find an entry from the current day, use the first entry as closest to midnight
+    if (!closestToMidnight) {
+      closestToMidnight = data[0];
+    }
+    console.log(latestData)
+    console.log(closestToMidnight)
+
+    return latestData["Total Flow"] - closestToMidnight["Total Flow"];
+  };
+
   const handleNodeSelection = (event) => {
     const selectedNode = event.target.value;
     if (!selectedNodes.includes(selectedNode)) {
@@ -123,6 +171,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
   };
 
   const getUnit = (key) => {
+    console.log(getTotalFLowWaterNode("water",nodeName));
     const unitMapping = {
       "Water Level": "cm",
       "Temperature": "°C",
@@ -219,6 +268,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       />
       {(viewMode === 'single' || viewMode === 'all') && (
         <>
+          <div className='centered-title'>{nodeName}</div>
           <div className={`centered-title ${viewMode === 'single' ? 'flex justify-between' : ''}`}>
           {viewMode === 'single' && (
               <span className="latest-data opacity-0">
@@ -242,6 +292,8 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
                 {` (Latest Reading ${latestData[selectedAttribute]} ${getUnit(selectedAttribute)})`}
               </span>
             )}
+
+            
           </div>
           {viewMode === 'single' && hasMultipleAttributes && (
             <div className="attribute-dropdown-container">
