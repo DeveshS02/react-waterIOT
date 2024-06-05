@@ -18,7 +18,7 @@ const DataFetcher = ({ activeTab, filter, allNodes, nodes, setSelectedDetail, se
             now.getTime() - lastItemDate.getTime();
           const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
           let status = "false";
-          if (differenceInHours <= 24) {
+          if (differenceInHours <= 48) {
             status = "true";
           }
           return {
