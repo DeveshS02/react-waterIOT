@@ -10,16 +10,18 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
   const [selectedNodes, setSelectedNodes] = useState([nodeName]);
   const nodeNames = Object.keys(allData[nodeType]);
 
-  const getRandomColor = () => {
-    const hexRange = 0x7F7F7F;
-    const randomHex = Math.floor(Math.random() * hexRange).toString(16).padStart(6, '0');
-    return `#${randomHex}`;
+  const getDistinctColor = (index, total) => {
+    const hue = (index / total) * 360 + (Math.random() - 0.5) * 20; // Slight random variation in hue
+    const saturation = 70 + (Math.random() - 0.5) * 10; // Slight random variation in saturation
+    const lightness = 50 + (Math.random() - 0.5) * 10; // Slight random variation in lightness
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
-
+  
   const chartDataSingle = useMemo(() => {
     const colors = {};
-    const datasets = selectedNodes.map(node => {
-      const color = getRandomColor();
+    const totalNodes = selectedNodes.length;
+    const datasets = selectedNodes.map((node, index) => {
+      const color = getDistinctColor(index, totalNodes);
       colors[node] = color;
       return {
         label: node,
@@ -35,12 +37,12 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
     };
   }, [data, selectedNodes, selectedAttribute, allData, nodeType]);
 
-  const chartDataAll = useMemo(() => (attr) => ({
+  const chartDataAll = useMemo(() => (attr, index, total) => ({
     labels: data.map(entry => new Date(entry.Last_Updated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
     datasets: [{
       label: attr,
       data: data.map(entry => entry[attr]),
-      borderColor: getRandomColor(),
+      borderColor: getDistinctColor(index, total),
       fill: false
     }]
   }), [data]);
@@ -117,45 +119,50 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       return null;
     }
   
-    // Get the current date at 00:00 (midnight)
     const currentDate = new Date();
     const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
   
-    // Get the latest entry (last entry in the array)
     const latestEntry = data[data.length - 1];
     const latestEntryDate = new Date(latestEntry.Last_Updated);
   
-    // Check if the latest entry is from the current day
     if (latestEntryDate < startOfDay || latestEntryDate >= new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000)) {
       console.error('Latest entry is not from the current day.');
       return null;
     }
   
-    // Initialize the closest to midnight entry
     let closestToMidnight = null;
   
-    // Iterate from the end of the array to find the entry closest to midnight
     for (let i = data.length - 1; i >= 0; i--) {
       const entryDate = new Date(data[i].Last_Updated);
   
-      // Stop when we find an entry from the previous day
       if (entryDate < startOfDay) {
         break;
       }
   
-      // Update the closest to midnight entry
       closestToMidnight = data[i];
     }
   
-    // If we don't find an entry from the current day, use the first entry as closest to midnight
     if (!closestToMidnight) {
       closestToMidnight = data[0];
     }
-    console.log(latestData)
-    console.log(closestToMidnight)
-
-    return latestData["Total Flow"] - closestToMidnight["Total Flow"];
+  
+    return (latestEntry["Total Flow"] - closestToMidnight["Total Flow"]).toFixed(2);
   };
+
+  const getTotalConsumptionTankNode = (nodeType, nodeName) =>{
+    const data= allData[nodeType][nodeName];
+    if (!data || data.length === 0) {
+      console.error('No data available for the given node.');
+      return null;
+    }
+    let totalConsumption=0;
+
+    for(let i=0; i<data.length-1; i++) {
+      if(data[i]['Total Volume']> data[i+1]['Total Volume']) totalConsumption+=data[i]['Total Volume']-data[i+1]['Total Volume']
+    }
+
+    return totalConsumption.toFixed(2);
+  }
 
   const handleNodeSelection = (event) => {
     const selectedNode = event.target.value;
@@ -171,7 +178,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
   };
 
   const getUnit = (key) => {
-    console.log(getTotalFLowWaterNode("water",nodeName));
+    console.log(getTotalConsumptionTankNode("tank",nodeName));
     const unitMapping = {
       "Water Level": "cm",
       "Temperature": "°C",
@@ -269,8 +276,8 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       {(viewMode === 'single' || viewMode === 'all') && (
         <>
           <div className='centered-title'>{nodeName}</div>
-          <div className={`centered-title ${viewMode === 'single' ? 'flex justify-between' : ''}`}>
-          {viewMode === 'single' && (
+          <div className='centered-title flex justify-between'>
+            {(
               <span className="latest-data opacity-0">
                 this is how to scam bruh 
               </span>
@@ -292,8 +299,16 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
                 {` (Latest Reading ${latestData[selectedAttribute]} ${getUnit(selectedAttribute)})`}
               </span>
             )}
-
-            
+            {viewMode === 'all' && nodeType === 'tank' &&(
+              <span className="latest-data">
+                {` (Total Usage ${getTotalConsumptionTankNode('tank', nodeName)} m³)`}
+              </span>
+            )}
+            {viewMode === 'all' && nodeType === 'water' &&(
+              <span className="latest-data">
+                {` (Today's Usage ${getTotalFLowWaterNode('water', nodeName )} L)`}
+              </span>
+            )}
           </div>
           {viewMode === 'single' && hasMultipleAttributes && (
             <div className="attribute-dropdown-container">
@@ -312,15 +327,15 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       )}
       {viewMode === 'all' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {attributes.map(attr => (
-            <div key={attr} className="graph-item all-mode-item">
-              <Line data={chartDataAll(attr)} options={chartOptions(attr, getUnit(attr))} height={400} />
-              <div className="latest-data">
-                {`Latest Reading: ${latestData[attr]} ${getUnit(attr)}`}
-              </div>
+        {attributes.map((attr, index) => (
+          <div key={attr} className="graph-item all-mode-item">
+            <Line data={chartDataAll(attr, index, attributes.length)} options={chartOptions(attr, getUnit(attr))} height={400} />
+            <div className="latest-data">
+              {`Latest Reading: ${latestData[attr]} ${getUnit(attr)}`}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
       ) : (
         <>
           {viewMode === 'single' && (
@@ -376,7 +391,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
                   </select>
                 </div>
                 <Line
-                className='graph-item'
+                  className='graph-item'
                   data={chartDataSingle}
                   options={chartOptions(selectedAttribute, getUnit(selectedAttribute))}
                   height={400}

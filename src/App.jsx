@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Navbar from "./components/Navbar";
 import IndexButton from "./components/IndexButton";
 import IndexPanel from "./components/IndexPanel";
@@ -14,6 +14,9 @@ import fetch_data from "./utils/fetch_data";
 import extractData from "./utils/extract_last_array";
 import ImageDisplay from "./components/ImageDisplay"; // Import the new component
 import Login from "./components/Login";
+import WelcomeContainer from "./components/Welcommodal";
+import TooltipContainer from "./components/tooltipstatus";
+import Tooltipindex from "./components/tooltipindex";
 
 const options = [
   { id: 1, label: "Water Tank", image: waterTankImage },
@@ -38,14 +41,18 @@ const App = () => {
   const [isClosing, setIsClosing] = useState(false);
   const [isNavClosing, setNavClosing]= useState(false);
   const [isNavOpening, setNavOpening]= useState(false);
+  const [showTooltip, setShowTooltip] = useState(true);
+  const statusButtonRef = useRef(null);
+  const indexButtonRef = useRef(null);
+  const [isWelcomeOpen, setIsWelcomeOpen] = useState(true);
 
   const [nodes, setNodes] = useState({ tank: [], borewell: [], water: [] });
   const [data, setData] = useState({ tank: [], borewell: [], water: [] });
-  const [latestData, setLatestData] = useState({
-    tank: [],
-    borewell: [],
-    water: [],
-  });
+  const [latestData, setLatestData] = useState({ tank: [], borewell: [], water: [] });
+  const [filteredNames, setFilteredNames] = useState({ tank: [], borewell: [], water: [] });
+  const [filteredData, setFilteredData] = useState({ tank: [], borewell: [], water: [] });
+
+
   const [loading, setLoading] = useState(true);
   const [bounds, setBounds] = useState(null); // Default bounds
 
@@ -53,9 +60,9 @@ const App = () => {
     setLoading(true);
     try {
       const [tankNodes, borewellNodes, waterNodes] = await Promise.all([
-        fetch_data("https://gateway-gamma-taupe.vercel.app/water/staticnodesC"),
-        fetch_data("https://gateway-gamma-taupe.vercel.app/water/borewellnodesC"),
-        fetch_data("https://gateway-gamma-taupe.vercel.app/water/waterC"),
+        fetch_data("https://backtest-ds7q.onrender.com/water/staticnodesC"),
+        fetch_data("https://backtest-ds7q.onrender.com/water/borewellnodesC"),
+        fetch_data("https://backtest-ds7q.onrender.com/water/waterC"),
       ]);
 
       const filterNodesByLocation = (nodes) =>
@@ -68,6 +75,17 @@ const App = () => {
         tank: filteredTankNodes,
         borewell: filteredBorewellNodes,
         water: filteredWaterNodes,
+      });
+
+      // Store names of filtered nodes
+      const filteredTankNames = filteredTankNodes.map(node => node.name);
+      const filteredBorewellNames = filteredBorewellNodes.map(node => node.name);
+      const filteredWaterNames = filteredWaterNodes.map(node => node.name);
+
+      setFilteredNames({
+        tank: filteredTankNames,
+        borewell: filteredBorewellNames,
+        water: filteredWaterNames,
       });
 
       // Calculate extreme coordinates for setting bounds
@@ -106,9 +124,9 @@ const App = () => {
   const fetchData = useCallback(async () => {
     try {
       const [tankData, borewellData, waterData] = await Promise.all([
-        fetch_data("https://gateway-gamma-taupe.vercel.app/water/tankdata"),
-        fetch_data("https://gateway-gamma-taupe.vercel.app/water/borewellgraphC"),
-        fetch_data("https://gateway-gamma-taupe.vercel.app/water/latestwaterC"),
+        fetch_data("https://backtest-ds7q.onrender.com/water/tankdata"),
+        fetch_data("https://backtest-ds7q.onrender.com/water/borewellgraphC"),
+        fetch_data("https://backtest-ds7q.onrender.com/water/latestwaterC"),
       ]);
       setData({
         tank: renameKeys(tankData),
@@ -124,6 +142,26 @@ const App = () => {
     fetchNodesData();
     fetchData();
   }, [fetchNodesData, fetchData]);
+
+  const filterDataByNames = (data, names) =>
+    Object.keys(data)
+      .filter((key) => names.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = data[key];
+        return obj;
+      }, {});
+  
+  const filteredTankData = filterDataByNames(data['tank'], filteredNames['tank']);
+  const filteredBorewellData = filterDataByNames(data['borewell'], filteredNames['borewell']);
+  const filteredWaterData = filterDataByNames(data['water'], filteredNames['water']);
+  
+  useEffect(() => {
+    setFilteredData({
+      tank: filteredTankData,
+      borewell: filteredBorewellData,
+      water: filteredWaterData,
+    });
+  }, [nodes, data]);
 
   useEffect(() => {
     setLatestData({
@@ -196,6 +234,10 @@ const App = () => {
     );
     return selectedOption ? selectedOption.label : "All Nodes";
   };
+  const handleCloseContainers = useCallback(() => {
+    setShowTooltip(false);
+    setIsWelcomeOpen(false);
+  }, []);
 
   return (
     <div>
@@ -206,12 +248,13 @@ const App = () => {
           options={options}
           selectedOptions={selectedOptions}
           toggleOption={toggleOption}
-          data={data}
+          data={filteredData}
           nodes={nodes}
           isNavClosing={isNavClosing}
           isNavOpening={isNavOpening}
           setNavClosing={setNavClosing}
           setNavOpening={setNavOpening}
+          statusButtonRef={statusButtonRef}
         />
       
 
@@ -229,7 +272,7 @@ const App = () => {
 
       <div className="fixed bottom-4 left-4 p-2 z-50">
         {!isOpen && !isClosing && (
-          <IndexButton handleButtonClick={handleButtonClick} />
+          <IndexButton handleButtonClick={handleButtonClick} indexButtonRef={indexButtonRef}/>
         )}
         <div
           className={`${
@@ -250,13 +293,26 @@ const App = () => {
       </div>
       {!loading && (
         <div>
-          <ImageDisplay imageSrc={imagepath} altText="Your Alt Text" />
-        </div>
-      )}
+          <WelcomeContainer
+            isOpen={isWelcomeOpen}
+            onClose={handleCloseContainers}
+          />
+          <TooltipContainer
+            isVisible={showTooltip}
+            targetRef={statusButtonRef}
+            onClose={handleCloseContainers}
+          />
+          <Tooltipindex
+            isVisible={showTooltip}
+            targetRef={indexButtonRef}
+            onClose={handleCloseContainers}
+          />
+       </div>
+        )}
         </>
       
     </div>
   );
 };
 
-export default App;
+export default App;

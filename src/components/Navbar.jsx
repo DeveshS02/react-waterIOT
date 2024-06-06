@@ -14,7 +14,8 @@ const Navbar = ({
   isNavClosing,
   isNavOpening,
   setNavOpening,
-  setNavClosing
+  setNavClosing,
+  statusButtonRef,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -93,9 +94,9 @@ const Navbar = ({
               IIIT
             </a>
             <a href="https://spcrc.iiit.ac.in/" className="hover:text-blue-300">
-              SPCRC
+              SPCRC   
             </a>
-            <button onClick={handleButtonClick} className="hover:text-blue-300">
+            <button ref={statusButtonRef} onClick={handleButtonClick} className="hover:text-blue-300">
               Status of Node
             </button>
             <div className="mr-4">
