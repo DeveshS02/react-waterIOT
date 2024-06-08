@@ -14,9 +14,9 @@ import icon_waternode_digital from '../images/sheni-new.png';
 import icon_waternode_digital_inactive from '../images/not-sheni-new.png';
 import image2 from "../images/hydrowfinal.png";
 
-const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loading, setNavClosing, setNavOpening }) => {
+const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loading, setNavClosing, setNavOpening, filteredNames }) => {
   const [selectedNode, setSelectedNode] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
-
+  const [filteredData, setFilteredData] = useState({tank: [], borewell: [], water: []})
   const iconConfig = {
     tank: [createCustomIcon(icon_tanker), createCustomIcon(icon_tanker_inactive)],
     borewell: [createCustomIcon(icon_bore), createCustomIcon(icon_bore_inactive)],
@@ -44,10 +44,9 @@ const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loadin
       const node = nodes.water.find(node => node.name === nodeName);
       const isAnalog = node?.parameters.includes('isanalog');
       const analogOrDigital = isAnalog ? 'analog' : 'digital';
-      
       const attributes = !isAnalog
         ? Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated')
-        : Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated' && key !== 'pressure' && key !== 'pressurevoltage');
+        : Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated' && key !== 'Pressure' && key !== 'Pressure Voltage');
       
       setSelectedNode({
         data: nodeData,
@@ -70,6 +69,26 @@ const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loadin
     setNavClosing(true);
     setNavOpening(false);
   };
+
+  const filterDataByNames = (data, names) =>
+    Object.keys(data)
+      .filter((key) => names.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = data[key];
+        return obj;
+      }, {});
+  
+  const filteredTankData = filterDataByNames(data['tank'], filteredNames['tank']);
+  const filteredBorewellData = filterDataByNames(data['borewell'], filteredNames['borewell']);
+  const filteredWaterData = filterDataByNames(data['water'], filteredNames['water']);
+  
+  useEffect(() => {
+    setFilteredData({
+      tank: filteredTankData,
+      borewell: filteredBorewellData,
+      water: filteredWaterData,
+    });
+  }, [nodes, data]);
 
   const handleModalClose = () => {
     setSelectedNode({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
@@ -152,7 +171,7 @@ const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loadin
             attributes={selectedNode.attributes} 
             nodeType={selectedNode.type} 
             analogOrDigital={selectedNode.analogOrDigital} 
-            allData={data} 
+            allData={filteredData} 
             nodeName={selectedNode.name} />
         </Modal>
       )}

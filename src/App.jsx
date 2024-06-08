@@ -268,6 +268,7 @@ const App = () => {
         loading={loading}
         setNavClosing={setNavClosing}
         setNavOpening={setNavOpening}
+        filteredNames={filteredNames}
       />
 
       <div className="fixed bottom-4 left-4 p-2 z-50">

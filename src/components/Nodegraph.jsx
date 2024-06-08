@@ -113,7 +113,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
 
   const getTotalFLowWaterNode = (nodeType, nodeName) => {
     const data = allData[nodeType][nodeName];
-  
+    
     if (!data || data.length === 0) {
       console.error('No data available for the given node.');
       return null;
