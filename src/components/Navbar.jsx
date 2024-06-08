@@ -57,7 +57,7 @@ const Navbar = ({
           isMenuOpen || isAnimating ? "rounded" : "rounded-full"
         } ${isNavClosing ? "goUp" :'' } ${isNavOpening ? 'goDown' : ''}`}
       >
-        <div className="container py-3 flex justify-between items-center">
+        <div className="py-3 flex justify-between items-center">
           <div className=" pl-5 md:pl-8 flex items-center">
             <a href="/">
               <img src={image} alt="IIIT Logo" className="h-8 md:h-10 mr-0 md:mr-1" />
