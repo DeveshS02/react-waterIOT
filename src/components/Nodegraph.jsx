@@ -56,7 +56,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
         text: `${title} (${yAxisUnit})`,
         color: '#97266d',
         font: {
-          size: `${18}vw`
+          size: 18
         },
         padding: {
           top: 10,
@@ -66,10 +66,20 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       tooltip: {
         callbacks: {
           title: (context) => {
-            const date = new Date(data[context[0].dataIndex].Last_Updated);
-            return date.toLocaleString();
+            const reading = context[0].raw; // Get the reading value
+            return `${reading} ${getUnit(selectedAttribute)}`; // Set as title
+          },
+          label: (context) => {
+            const date = new Date(data[context.dataIndex].Last_Updated);
+            return date.toLocaleString(); // Set as body
           }
-        }
+        },
+        bodyFont: {
+          size: 15 // Adjust the tooltip body font size here
+        },
+        titleFont: {
+          size: 15 // Adjust the title font size here if needed
+        },
       }
     },
     scales: {
@@ -78,7 +88,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
           display: true,
           color: '#97266d',
           font: {
-            size: `${20}vw`
+            size: 20
           },
           text: 'Time'
         },
@@ -86,7 +96,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
           color: '#97266d',
           maxRotation: 45,
           font: {
-            size: `${13}vw`
+            size: 13
           },
           minRotation: 45,
           padding: 10
@@ -97,23 +107,25 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
           display: true,
           color: '#97266d',
           font: {
-            size: `${20}vw`
+            size: 20
           },
           text: `${title} (${yAxisUnit})`
         },
         ticks: {
           color: '#97266d',
           font: {
-            size: `${13}vw`
+            size: 13
           },
         }
       }
     }
   });
+  
+  
 
   const getTotalFLowWaterNode = (nodeType, nodeName) => {
     const data = allData[nodeType][nodeName];
-    
+
     if (!data || data.length === 0) {
       console.error('No data available for the given node.');
       return null;
@@ -152,7 +164,6 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
   const getTotalConsumptionTankNode = (nodeType, nodeName) =>{
     const data= allData[nodeType][nodeName];
     if (!data || data.length === 0) {
-      console.error('No data available for the given node.');
       return null;
     }
     let totalConsumption=0;
@@ -186,7 +197,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       "Flow Rate": "kL/hr",
       "Pressure": "cbar",
       "Pressure Voltage": "cbar",
-      "Total Flow": "Litres"
+      "Total Flow": "kL"
     };
     return unitMapping[key] || "";
   };
@@ -276,7 +287,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       {(viewMode === 'single' || viewMode === 'all') && (
         <>
           <div className='centered-title'>{nodeName}</div>
-          <div className='centered-title flex justify-between'>
+          <div className='centered-title flex justify-between align-middle'>
             {(
               <span className="latest-data opacity-0">
                 this is how to scam bruh 
@@ -295,9 +306,14 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
               }
             })()}
             {viewMode === 'single' && (
-              <span className="latest-data">
+              <div className='latest-data'>
+                <span>
                 {` (Latest Reading ${latestData[selectedAttribute]} ${getUnit(selectedAttribute)})`}
               </span>
+              <span>
+                {latestData['Last_Updated']}
+              </span>
+              </div>
             )}
             {viewMode === 'all' && nodeType === 'tank' &&(
               <span className="latest-data">
@@ -306,7 +322,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
             )}
             {viewMode === 'all' && nodeType === 'water' &&(
               <span className="latest-data">
-                {` (Today's Usage ${getTotalFLowWaterNode('water', nodeName )} L)`}
+                {` (Today's Usage ${getTotalFLowWaterNode('water', nodeName )} kL)`}
               </span>
             )}
           </div>
@@ -331,7 +347,12 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
           <div key={attr} className="graph-item all-mode-item">
             <Line data={chartDataAll(attr, index, attributes.length)} options={chartOptions(attr, getUnit(attr))} height={400} />
             <div className="latest-data">
+              <span>
               {`Latest Reading: ${latestData[attr]} ${getUnit(attr)}`}
+              </span>
+              <span>
+              {latestData['Last_Updated']}
+              </span>
             </div>
           </div>
         ))}
