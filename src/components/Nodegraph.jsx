@@ -67,7 +67,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
         callbacks: {
           title: (context) => {
             const reading = context[0].raw; // Get the reading value
-            return `${reading} ${getUnit(selectedAttribute)}`; // Set as title
+            return `${reading} ${yAxisUnit}`; // Set as title
           },
           label: (context) => {
             const date = new Date(data[context.dataIndex].Last_Updated);
