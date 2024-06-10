@@ -161,19 +161,46 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
     return (latestEntry["Total Flow"] - closestToMidnight["Total Flow"]).toFixed(2);
   };
 
-  const getTotalConsumptionTankNode = (nodeType, nodeName) =>{
-    const data= allData[nodeType][nodeName];
+  const getTotalConsumptionTankNode = (nodeType, nodeName) => {
+    const data = allData[nodeType][nodeName];
+
     if (!data || data.length === 0) {
+      console.error('No data available for the given node.');
       return null;
     }
-    let totalConsumption=0;
 
-    for(let i=0; i<data.length-1; i++) {
-      if(data[i]['Total Volume']> data[i+1]['Total Volume']) totalConsumption+=data[i]['Total Volume']-data[i+1]['Total Volume']
+    const currentDate = new Date();
+    const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
+  
+    const latestEntry = data[data.length - 1];
+    const latestEntryDate = new Date(latestEntry.Last_Updated);
+  
+    if (latestEntryDate < startOfDay || latestEntryDate >= new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000)) {
+      console.error('Latest entry is not from the current day.');
+      return null;
+    }
+
+    let totalConsumption = 0;
+    let previousEntryValue = null;
+
+    for (let i = data.length - 1; i >= 0; i--) {
+      const entry = data[i];
+      const entryDate = new Date(entry.Last_Updated);
+
+      if (entryDate < startOfDay) {
+        break;
+      }
+
+      if (previousEntryValue !== null && entry["Total Volume"] > previousEntryValue) {
+        totalConsumption += entry["Total Volume"] - previousEntryValue;
+      }
+
+      previousEntryValue = entry["Total Volume"];
     }
 
     return totalConsumption.toFixed(2);
-  }
+};
+
 
   const handleNodeSelection = (event) => {
     const selectedNode = event.target.value;
@@ -189,11 +216,11 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
   };
 
   const getUnit = (key) => {
-    console.log(getTotalConsumptionTankNode("tank",nodeName));
+    
     const unitMapping = {
       "Water Level": "cm",
       "Temperature": "°C",
-      "Total Volume": "m³",
+      "Total Volume": "kL",
       "Flow Rate": "kL/hr",
       "Pressure": "cbar",
       "Pressure Voltage": "cbar",
@@ -317,7 +344,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
             )}
             {viewMode === 'all' && nodeType === 'tank' &&(
               <span className="latest-data">
-                {` (Total Usage ${getTotalConsumptionTankNode('tank', nodeName)} m³)`}
+                {` (Today's Usage ${getTotalConsumptionTankNode('tank', nodeName)} kL)`}
               </span>
             )}
             {viewMode === 'all' && nodeType === 'water' &&(
