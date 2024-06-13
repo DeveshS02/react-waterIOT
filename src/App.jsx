@@ -48,6 +48,7 @@ const App = () => {
 
   const [nodes, setNodes] = useState({ tank: [], borewell: [], water: [] });
   const [data, setData] = useState({ tank: [], borewell: [], water: [] });
+  const [hoverData, setHoverData] = useState({ tank: [], borewell: [], water: [] });
   const [latestData, setLatestData] = useState({ tank: [], borewell: [], water: [] });
   const [filteredNames, setFilteredNames] = useState({ tank: [], borewell: [], water: [] });
   const [filteredData, setFilteredData] = useState({ tank: [], borewell: [], water: [] });
@@ -138,10 +139,28 @@ const App = () => {
     }
   }, []);
 
+  const fetchHoverData = useCallback(async () => {
+    try {
+      const [tankData, borewellData, waterData] = await Promise.all([
+        fetch_data("https://backtest-ds7q.onrender.com/water/tankerdata"),
+        fetch_data("https://backtest-ds7q.onrender.com/water/borewelldata"),
+        fetch_data("https://backtest-ds7q.onrender.com/water/waterminutesdatas"),
+      ]);
+      setHoverData({
+        tank: renameKeys(tankData),
+        borewell: renameKeys(borewellData),
+        water: renameKeys(waterData),
+      });
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchNodesData();
     fetchData();
-  }, [fetchNodesData, fetchData]);
+    fetchHoverData();
+  }, [fetchNodesData, fetchData, fetchHoverData]);
 
   const filterDataByNames = (data, names) =>
     Object.keys(data)
@@ -260,7 +279,7 @@ const App = () => {
 
       <MapComponent
         selectedOptions={selectedOptions}
-        location="IIITH"
+        location="RN"
         nodes={nodes}
         latestData={latestData}
         data={data}

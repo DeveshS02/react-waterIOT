@@ -10,7 +10,7 @@ const ContentDisplay = ({
   data,
   setSelectedDetail,
   setNavClosing,
-  setNavOpening
+  setNavOpening,
 }) => {
   const containerRef = useRef(null);
   const [allNodesData, setAllNodesData] = useState([]);
@@ -50,31 +50,38 @@ const ContentDisplay = ({
 
   const handleNodeClick = (nodeType, nodeName) => {
     const nodeData = data[nodeType][nodeName];
-    if (nodeType === 'water') {
-      const node = nodes.water.find(node => node.name === nodeName);
-      const isAnalog = node?.parameters.includes('isanalog');
-      const analogOrDigital = isAnalog ? 'analog' : 'digital';
-      
+    if (nodeType === "water") {
+      const node = nodes.water.find((node) => node.name === nodeName);
+      const isAnalog = node?.parameters.includes("isanalog");
+      const analogOrDigital = isAnalog ? "analog" : "digital";
+
       const attributes = !isAnalog
-        ? Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated')
-        : Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated' && key !== 'pressure' && key !== 'pressurevoltage');
-      
+        ? Object.keys(nodeData[0]).filter((key) => key !== "Last_Updated")
+        : Object.keys(nodeData[0]).filter(
+            (key) =>
+              key !== "Last_Updated" &&
+              key !== "pressure" &&
+              key !== "pressurevoltage"
+          );
+
       setSelectedDetail({
         data: nodeData,
         type: nodeType,
         attributes: attributes,
         isAnalog: isAnalog,
         name: nodeName,
-        analogOrDigital: analogOrDigital
+        analogOrDigital: analogOrDigital,
       });
     } else {
       setSelectedDetail({
         data: nodeData,
         type: nodeType,
-        attributes: Object.keys(nodeData[0]).filter(key => key !== 'Last_Updated'),
+        attributes: Object.keys(nodeData[0]).filter(
+          (key) => key !== "Last_Updated"
+        ),
         isAnalog: false,
         name: nodeName,
-        analogOrDigital: null
+        analogOrDigital: null,
       });
     }
     setNavClosing(true);
@@ -94,19 +101,44 @@ const ContentDisplay = ({
           <div className="flex flex-col space-y-4 justify-center items-center">
             <div>
               <span className="key">Total Flow: </span>
-              <span className="value">{item.totalflow} L</span>
+              {(() => {
+                let x = item.totalflow;
+                if (x === "-") {
+                  return <span className="value"> {x} </span>;
+                } else {
+                  return <span className="value">{x} L</span>;
+                }
+              })()}
             </div>
             <div>
               <span className="key">Flow Rate: </span>
-              <span className="value">{item.flowrate} kl/hr</span>
+              {(() => {
+                let x = item.flowrate;
+                if (x === "-") {
+                  return <span className="value"> {x} </span>;
+                } else {
+                  return <span className="value">{x} kl/hr</span>;
+                }
+              })()}
             </div>
             <div>
               <span className="key">Pressure: </span>
-              <span className="value">{item.pressure} cbar</span>
+              {(() => {
+                let x = item.pressure;
+                if (x === "-") {
+                  return <span className="value"> {x} </span>;
+                } else {
+                  return <span className="value">{x} cbar</span>;
+                }
+              })()}
             </div>
             <div>
-              <button className="text-white details  rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20"
-              onClick={() =>{handleNodeClick("water",item.name)}}>
+              <button
+                className="text-white details  rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20"
+                onClick={() => {
+                  handleNodeClick("water", item.name);
+                }}
+              >
                 Details
               </button>
             </div>
@@ -118,21 +150,46 @@ const ContentDisplay = ({
           <div className="flex flex-col space-y-4 justify-center items-center">
             <div>
               <span className="key">Temperature: </span>
-              <span className="value">{item.temperature} &deg;C</span>
+              {(() => {
+                let x = item.temperature;
+                if (x === "-") {
+                  return <span className="value"> {x} </span>;
+                } else {
+                  return <span className="value">{x} &deg;C</span>;
+                }
+              })()}
             </div>
             <div>
               <span className="key">Total Volume: </span>
-              <span className="value">
-                {item.totalvolume} m<sup>3</sup>
-              </span>
+              {(() => {
+                let x = item.totalvolume;
+                if (x === "-") {
+                  return <span className="value"> {x} </span>;
+                } else {
+                  <span className="value">
+                    {x} m<sup>3</sup>
+                  </span>;
+                }
+              })()}
             </div>
             <div>
               <span className="key">Water Level: </span>
-              <span className="value">{item.waterlevel} cm</span>
+              {(() => {
+                let x = item.waterlevel;
+                if (x === "-") {
+                  return <span className="value"> {x} </span>;
+                } else {
+                  return <span className="value">{x} cm</span>;
+                }
+              })()}
             </div>
             <div>
-              <button className="text-white details rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20"
-              onClick={() =>{handleNodeClick("tank",item.name)}}>
+              <button
+                className="text-white details rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20"
+                onClick={() => {
+                  handleNodeClick("tank", item.name);
+                }}
+              >
                 Details
               </button>
             </div>
@@ -143,11 +200,22 @@ const ContentDisplay = ({
         <div className="flex flex-col space-y-4 items-center justify-center">
           <div>
             <span className="key">Water Level: </span>
-            <span className="value">{item.waterlevel} cm</span>
+            {(() => {
+              let x = item.waterlevel;
+              if (x === "-") {
+                return <span className="value"> {x} </span>;
+              } else {
+                return <span className="value">{x} cm</span>;
+              }
+            })()}
           </div>
           <div>
-            <button className="text-white details rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20"
-            onClick={() =>{handleNodeClick("borewell",item.name)}}>
+            <button
+              className="text-white details rounded-lg border-2 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md h-10 w-20"
+              onClick={() => {
+                handleNodeClick("borewell", item.name);
+              }}
+            >
               Details
             </button>
           </div>
@@ -257,4 +325,4 @@ const ContentDisplay = ({
   );
 };
 
-export default ContentDisplay;
+export default ContentDisplay;

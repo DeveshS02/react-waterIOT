@@ -550,13 +550,24 @@ background-color: rgb(8, 51, 68);
 .indexpanel{
   width: 353px;
   min-height: fit-content;
-   background: rgb(255, 255, 255, .3);
+   /* background: rgb(255, 255, 255, .2);
       box-shadow: 1px 1px 1px rgba(0, 54, 65, 0.1), 
       -1px -1px 1px rgba(0, 68, 81, 0.1), -1px 1px 1px rgba(0, 68, 81, 0.1), 1px -1px 1px rgba(0, 68, 81, 0.1), 
       inset -3px -3px 5px rgba(255, 255, 255, 0.1), 
       inset 3px 3px 5px rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      
+      backdrop-filter: blur(8px); */
+      background: rgba(255, 255, 255, 0.1); /* Use rgba for opacity */
+      box-shadow: 
+        1px 1px 1px rgba(0, 54, 65, 0), 
+        -1px -1px 1px rgba(0, 68, 81, 0), 
+        -1px 1px 1px rgba(0, 68, 81, 0), 
+        1px -1px 1px rgba(0, 68, 81, 0), 
+        inset -3px -3px 5px rgba(255, 255, 255, 0.3), 
+        inset 3px 3px 5px rgba(255, 255, 255, 0.1), 
+        5px 5px 15px rgba(0, 0, 0, 0.3); /* Added more depth with a larger shadow */
+      backdrop-filter: blur(8px); /* Keep the blur for the glassy effect */
+      border: 1px solid rgba(255, 255, 255, 0.1); /* Add a subtle border */
+      border-radius:10px;
 }
 @media (max-width: 768px) {
   .indexpanel{
@@ -696,7 +707,6 @@ color:#05337d;
 
  
 /*css for dropdown  */
-
 @keyframes dropdownOpen {
   0% {
     transform: scaleY(0);
@@ -715,21 +725,39 @@ color:#05337d;
   }
 }
 .dropdown-menu {
-  box-shadow: 1px 1px 1px rgba(0, 54, 65, 0.1), 
-  -1px -1px 1px rgba(0, 68, 81, 0.1), -1px 1px 1px rgba(0, 68, 81, 0.1), 1px -1px 1px rgba(0, 68, 81, 0.1), 
-  inset -3px -3px 5px rgba(255, 255, 255, 0.1), 
-  inset 3px 3px 5px rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1); /* Use rgba for opacity */
+  box-shadow: 
+    1px 1px 1px rgba(0, 54, 65, 0), 
+    -1px -1px 1px rgba(0, 68, 81, 0), 
+    -1px 1px 1px rgba(0, 68, 81, 0), 
+    1px -1px 1px rgba(0, 68, 81, 0), 
+    inset -3px -3px 5px rgba(255, 255, 255, 0.3), 
+    inset 3px 3px 5px rgba(255, 255, 255, 0.1), 
+    5px 5px 15px rgba(0, 0, 0, 0.5); /* Added more depth with a larger shadow */
+  backdrop-filter: blur(10px); /* Keep the blur for the glassy effect */
+  /* border: 1px solid rgba(255, 255, 255, 0.1);  */
+   border-radius: 10px;
   transform-origin: top;
   transition: transform 0.4s ease-out;
+  z-index: 9;
 }
 
 .dropdown-open {
-  animation: dropdownOpen 0.6s forwards;
+  animation: dropdownOpen 0.4s forwards;
 }
 
 .dropdown-closed {
-  animation: dropdownClose 0.6s forwards;
+  animation: dropdownClose 0.4s forwards;
 }
+
+.dropdownoption{
+  transition: 0.4s;
+}
+.dropdownoption:hover{
+  color: #e86e0a;
+}
+
+/*CSS for user guide */
 .welcome{
   border:solid #99ABC8;
   border-radius: 35px;

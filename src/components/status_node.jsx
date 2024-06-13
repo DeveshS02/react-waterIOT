@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from "react";
 import DataFetcher from "./DataFetcher";
-import NodeGraph from './Nodegraph';  
-import Modal from './Modal'; 
+import NodeGraph from "./Nodegraph";
+import Modal from "./Modal";
 
 const tabs = ["AllNodes", "WaterMeter", "WaterTank", "Borewell"];
 
-const StatusNode = ({ onClose, data , nodes, setNavOpening, setNavClosing}) => {
+const StatusNode = ({ onClose, data, nodes, setNavOpening, setNavClosing }) => {
   const [activeTab, setActiveTab] = useState("AllNodes");
   const [filter, setFilter] = useState("All");
   const [isClosing, setIsClosing] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Initialize based on current window size
-  const [selectedDetail, setSelectedDetail] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [selectedDetail, setSelectedDetail] = useState({
+    data: null,
+    type: null,
+    attributes: [],
+    isAnalog: false,
+    name: null,
+    analogOrDigital: null,
+  });
   const [isAnimationComplete, setIsAnimationComplete] = useState(false);
   const [isDataFetcherVisible, setIsDataFetcherVisible] = useState(true);
 
@@ -20,34 +27,49 @@ const StatusNode = ({ onClose, data , nodes, setNavOpening, setNavClosing}) => {
       setIsMobile(window.innerWidth <= 768);
     };
 
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape" && !selectedDetail.data) {
+        handleClose();
+      }
+    };
+
     window.addEventListener("resize", handleResize);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("resize", handleResize);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [selectedDetail.data]);
 
   useEffect(() => {
     if (!isClosing) {
       setIsAnimationComplete(false);
       const timer = setTimeout(() => {
         setIsAnimationComplete(true);
-      }, 500); // Match this with your animation duration
+      }, 500);
       return () => clearTimeout(timer);
     }
   }, [isClosing]);
 
   const handleClose = () => {
-    setIsDataFetcherVisible(false); // Hide DataFetcher immediately
+    setIsDataFetcherVisible(false);
     setIsClosing(true);
     setTimeout(() => {
       onClose();
       setIsClosing(false);
-      setIsDataFetcherVisible(true); // Reset for next open
-    }, 1200); // Match this with your animation duration
-  };
+      setIsDataFetcherVisible(true);
+    }, 1200);
+  };
 
   const handleModalClose = () => {
-    setSelectedDetail({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
+    setSelectedDetail({
+      data: null,
+      type: null,
+      attributes: [],
+      isAnalog: false,
+      name: null,
+      analogOrDigital: null,
+    });
     setNavOpening(true);
     setNavClosing(false);
   };
@@ -85,7 +107,7 @@ const StatusNode = ({ onClose, data , nodes, setNavOpening, setNavClosing}) => {
           <div className="flex justify-center flex-grow ">
             {isMobile ? (
               <div className="relative">
-               <button
+                <button
                   className="px-2 flex items-center gap-2 py-2 font-semibold bg-white bg-opacity-50 backdrop-filter backdrop-blur-md rounded-md text-cyan-800 border-none focus:outline-none hover:bg-white hover-bg-opacity-10"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
@@ -94,17 +116,17 @@ const StatusNode = ({ onClose, data , nodes, setNavOpening, setNavClosing}) => {
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
-                    class="size-4"
+                    className="size-4"
                   >
                     <path
                       stroke="rgb(0, 131, 143)"
-                      stroke-width="1"
-                      fill-rule="evenodd"
+                      strokeWidth="1"
+                      fillRule="evenodd"
                       d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     />
                   </svg>
-                  </button>
+                </button>
                 {isDropdownOpen && (
                   <div className="absolute top-full left-0 w-auto bg-white border border-gray-300 rounded-md shadow-lg mt-2 z-10">
                     {tabs.map((tab) => (
@@ -155,7 +177,7 @@ const StatusNode = ({ onClose, data , nodes, setNavOpening, setNavClosing}) => {
           </div>
         </div>
         <div className="overflow-y-auto h-4/5 bg-transparent rounded p-4 datafetcher">
-        {isAnimationComplete && isDataFetcherVisible && (
+          {isAnimationComplete && isDataFetcherVisible && (
             <DataFetcher
               activeTab={activeTab}
               filter={filter}
@@ -164,24 +186,25 @@ const StatusNode = ({ onClose, data , nodes, setNavOpening, setNavClosing}) => {
               setSelectedDetail={setSelectedDetail}
               setNavClosing={setNavClosing}
               setNavOpening={setNavOpening}
-           />
-           )}
+            />
+          )}
         </div>
       </div>
 
       {selectedDetail.data && (
         <Modal onClose={handleModalClose}>
-          <NodeGraph 
-            data={selectedDetail.data} 
-            attributes={selectedDetail.attributes} 
-            nodeType={selectedDetail.type} 
-            analogOrDigital={selectedDetail.analogOrDigital} 
-            allData={data} 
-            nodeName={selectedDetail.name} />
+          <NodeGraph
+            data={selectedDetail.data}
+            attributes={selectedDetail.attributes}
+            nodeType={selectedDetail.type}
+            analogOrDigital={selectedDetail.analogOrDigital}
+            allData={data}
+            nodeName={selectedDetail.name}
+          />
         </Modal>
       )}
     </div>
   );
 };
 
-export default StatusNode;
+export default StatusNode;
