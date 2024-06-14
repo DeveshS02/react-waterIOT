@@ -104,9 +104,9 @@ const ContentDisplay = ({
               {(() => {
                 let x = item.totalflow;
                 if (x === "-") {
-                  return <span className="value"> {x} </span>;
+                  return <span className="value"> N/A </span>;
                 } else {
-                  return <span className="value">{x} L</span>;
+                  return <span className="value">{x} kL</span>;
                 }
               })()}
             </div>
@@ -115,7 +115,7 @@ const ContentDisplay = ({
               {(() => {
                 let x = item.flowrate;
                 if (x === "-") {
-                  return <span className="value"> {x} </span>;
+                  return <span className="value"> N/A </span>;
                 } else {
                   return <span className="value">{x} kl/hr</span>;
                 }
@@ -126,7 +126,7 @@ const ContentDisplay = ({
               {(() => {
                 let x = item.pressure;
                 if (x === "-") {
-                  return <span className="value"> {x} </span>;
+                  return <span className="value"> N/A </span>;
                 } else {
                   return <span className="value">{x} cbar</span>;
                 }
@@ -153,7 +153,7 @@ const ContentDisplay = ({
               {(() => {
                 let x = item.temperature;
                 if (x === "-") {
-                  return <span className="value"> {x} </span>;
+                  return <span className="value"> N/A </span>;
                 } else {
                   return <span className="value">{x} &deg;C</span>;
                 }
@@ -164,10 +164,10 @@ const ContentDisplay = ({
               {(() => {
                 let x = item.totalvolume;
                 if (x === "-") {
-                  return <span className="value"> {x} </span>;
+                  return <span className="value"> N/A </span>;
                 } else {
-                  <span className="value">
-                    {x} m<sup>3</sup>
+                  return <span className="value">
+                    {x} kL
                   </span>;
                 }
               })()}
@@ -177,7 +177,7 @@ const ContentDisplay = ({
               {(() => {
                 let x = item.waterlevel;
                 if (x === "-") {
-                  return <span className="value"> {x} </span>;
+                  return <span className="value"> N/A </span>;
                 } else {
                   return <span className="value">{x} cm</span>;
                 }
@@ -203,7 +203,7 @@ const ContentDisplay = ({
             {(() => {
               let x = item.waterlevel;
               if (x === "-") {
-                return <span className="value"> {x} </span>;
+                return <span className="value"> N/A </span>;
               } else {
                 return <span className="value">{x} cm</span>;
               }
