@@ -13,10 +13,11 @@ import icon_tanker_inactive from '../images/not_watertank.png';
 import icon_waternode_digital from '../images/sheni-new.png';
 import icon_waternode_digital_inactive from '../images/not-sheni-new.png';
 import image2 from "../images/hydrowfinal.png";
+import {DateTime} from 'luxon'
 
-const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loading, setNavClosing, setNavOpening, filteredNames }) => {
+const MapComponent = ({ selectedOptions, nodes, data, bounds, loading, setNavClosing, setNavOpening, hoverData }) => {
   const [selectedNode, setSelectedNode] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
-  const [filteredData, setFilteredData] = useState({tank: [], borewell: [], water: []})
+
   const iconConfig = {
     tank: [createCustomIcon(icon_tanker), createCustomIcon(icon_tanker_inactive)],
     borewell: [createCustomIcon(icon_bore), createCustomIcon(icon_bore_inactive)],
@@ -24,7 +25,20 @@ const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loadin
     water_digital: [createCustomIcon(icon_waternode_digital), createCustomIcon(icon_waternode_digital_inactive)]
   };
 
-  const isActive = (createdAt) => (new Date() - new Date(createdAt)) / (1000 * 60 * 60 * 24) <= 2;
+  const isActive = (createdAt) => {
+    const now = DateTime.now().setZone('Asia/Kolkata');
+    
+    // Attempt to parse with the first format
+    let latestTime = DateTime.fromFormat(createdAt, 'dd-MM-yyyy HH:mm:ss', { zone: 'Asia/Kolkata' });
+    
+    // If parsing with the first format fails, try the second format
+    if (!latestTime.isValid) {
+      latestTime = DateTime.fromFormat(createdAt, 'MM/dd/yyyy, HH:mm:ss', { zone: 'Asia/Kolkata' });
+    }
+  
+    // Check if the date is within the last 24 hours
+    return now.diff(latestTime, 'days').days < 1;
+  };
 
   const shouldDisplayNode = (node, type) => {
     if (selectedOptions.length === 0) return true;
@@ -70,26 +84,6 @@ const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loadin
     setNavOpening(false);
   };
 
-  const filterDataByNames = (data, names) =>
-    Object.keys(data)
-      .filter((key) => names.includes(key))
-      .reduce((obj, key) => {
-        obj[key] = data[key];
-        return obj;
-      }, {});
-  
-  const filteredTankData = filterDataByNames(data['tank'], filteredNames['tank']);
-  const filteredBorewellData = filterDataByNames(data['borewell'], filteredNames['borewell']);
-  const filteredWaterData = filterDataByNames(data['water'], filteredNames['water']);
-  
-  useEffect(() => {
-    setFilteredData({
-      tank: filteredTankData,
-      borewell: filteredBorewellData,
-      water: filteredWaterData,
-    });
-  }, [nodes, data]);
-
   const handleModalClose = () => {
     setSelectedNode({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
     setNavOpening(true);
@@ -100,7 +94,7 @@ const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loadin
     const unitMapping = {
       "Water Level": "cm",
       "Temperature": "°C",
-      "Total Volume": "m³",
+      "Total Volume": "kL",
       "Flow Rate": "kL/hr",
       "Pressure": "cbar",
       "Pressure Voltage": "cbar",
@@ -153,13 +147,13 @@ const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loadin
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
           {developWalls()}
           {nodes.tank.filter(node => shouldDisplayNode(node, 'tank')).map((node, index) => (
-            <NodeMarker key={index} node={node} icon={iconConfig.tank[0]} icon_inactive={iconConfig.tank[1]} data={latestData.tank[node.name]} nodeType="tank" />
+            <NodeMarker key={index} node={node} icon={iconConfig.tank[0]} icon_inactive={iconConfig.tank[1]} data={hoverData.tank[node.name]} nodeType="tank" />
           ))}
           {nodes.borewell.filter(node => shouldDisplayNode(node, 'borewell')).map((node, index) => (
-            <NodeMarker key={index} node={node} icon={iconConfig.borewell[0]} icon_inactive={iconConfig.borewell[1]} data={latestData.borewell[node.name]} nodeType="borewell" />
+            <NodeMarker key={index} node={node} icon={iconConfig.borewell[0]} icon_inactive={iconConfig.borewell[1]} data={hoverData.borewell[node.name]} nodeType="borewell" />
           ))}
           {nodes.water.filter(node => shouldDisplayNode(node, 'water')).map((node, index) => (
-            <NodeMarker key={index} node={node} icon={node.parameters.includes('isanalog') ? iconConfig.water[0] : iconConfig.water_digital[0]} icon_inactive={node.parameters.includes('isanalog') ? iconConfig.water[1] : iconConfig.water_digital[1]} data={latestData.water[node.name]} nodeType="water" />
+            <NodeMarker key={index} node={node} icon={node.parameters.includes('isanalog') ? iconConfig.water[0] : iconConfig.water_digital[0]} icon_inactive={node.parameters.includes('isanalog') ? iconConfig.water[1] : iconConfig.water_digital[1]} data={hoverData.water[node.name]} nodeType="water" />
           ))}
         </MapContainer>
       )}
@@ -171,7 +165,7 @@ const MapComponent = ({ selectedOptions, nodes, latestData, data, bounds, loadin
             attributes={selectedNode.attributes} 
             nodeType={selectedNode.type} 
             analogOrDigital={selectedNode.analogOrDigital} 
-            allData={filteredData} 
+            allData={data} 
             nodeName={selectedNode.name} />
         </Modal>
       )}

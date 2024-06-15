@@ -116,7 +116,8 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
           font: {
             size: 13
           },
-        }
+        },
+        reverse: nodeType === 'borewell'
       }
     }
   });
