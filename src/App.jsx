@@ -11,7 +11,6 @@ import sumpImage from "./images/sump.png";
 import boreWellImage from "./images/borewell.png";
 import pipelineImage from "./images/pipeline.png";
 import fetch_data from "./utils/fetch_data";
-import extractData from "./utils/extract_last_array";
 import WelcomeContainer from "./components/Welcommodal";
 import TooltipContainer from "./components/tooltipstatus";
 import Tooltipindex from "./components/tooltipindex";
@@ -39,7 +38,6 @@ const App = () => {
   const [nodes, setNodes] = useState({ tank: [], borewell: [], water: [] });
   const [data, setData] = useState({ tank: [], borewell: [], water: [] });
   const [hoverData, setHoverData] = useState({ tank: [], borewell: [], water: [] });
-  const [latestData, setLatestData] = useState({ tank: [], borewell: [], water: [] });
   const [filteredNames, setFilteredNames] = useState({ tank: [], borewell: [], water: [] });
   const [filteredData, setFilteredData] = useState({ tank: [], borewell: [], water: [] });
   const [mergedData, setMergedData] = useState({});
@@ -203,7 +201,7 @@ const App = () => {
         const formatData2 = 'dd-MM-yyyy HH:mm:ss';
         
         if(latestEntryData1 && entryData2){
-          // console.log(node + " " + latestEntryData1)
+          
           const latestCreatedAtData1 = parse(latestEntryData1.Last_Updated, formatData1, new Date());
           const createdAtData2 = parse(entryData2.Last_Updated, formatData2, new Date());
           
@@ -243,13 +241,6 @@ const App = () => {
     });
   }, [nodes, data]);
 
-  useEffect(() => {
-    setLatestData({
-      tank: extractData(data.tank),
-      borewell: extractData(data.borewell),
-      water: extractData(data.water),
-    });
-  }, [data]);
 
   const renameKeys = (data) => {
     const keyMapping = {
