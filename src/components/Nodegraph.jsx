@@ -2,14 +2,37 @@ import React, { useState, useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import ImageHolder from './ImageHolder';
 
-const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigital }) => {
+const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigital, imageCache, setImageCache }) => {
   const hasMultipleAttributes = attributes.length > 1;
   const [viewMode, setViewMode] = useState(hasMultipleAttributes ? 'all' : 'single');
   const [selectedAttribute, setSelectedAttribute] = useState(attributes[0]);
   const [selectedNodes, setSelectedNodes] = useState([nodeName]);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [isImageOpen, setIsImageOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const nodeNames = Object.keys(allData[nodeType]);
 
+  const nodeIndexMapping = {
+    0: "Himalaya01",
+    1: "Himalaya02",
+    2: "SmartWaterMeter_Node_Kohli_Rooftop-72",
+    3: "SmartWaterMeter_Node_Kohli_Rooftop-73",
+    4: "PH03-70",
+    5: "SmartWaterMeter_Node_PH04-70",
+    6: "SmartWaterMeter_Node_PH04-71",
+    7: "Smart Water Meter-Retrofit Vindhya Rooftop VN04-70",
+    8: "Smart Water Meter-Retrofit Vindhya Rooftop VN04-71",
+    9: "Parijath Nivas",
+    10: "Smart Water Meter-Retrofit Bodh Bhavan Rooftop BB0",
+    11: "Smart Water Meter-Retrofit Bodh Bhavan Rooftop BB1",
+    12: "SmartWaterMeter_Node_PL00-70",
+    13: "SmartWaterMeter_Node_PL00-71",
+    14: "PH02-70"
+  };
+  
   const getDistinctColor = (index, total) => {
     const hue = (index / total) * 360 + (Math.random() - 0.5) * 20; // Slight random variation in hue
     const saturation = 70 + (Math.random() - 0.5) * 10; // Slight random variation in saturation
@@ -299,6 +322,31 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
     );
   };
 
+  const fetchImage = async (index) => {
+    if (imageCache[index]) {
+      setImageUrl(imageCache[index]);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await fetch(`https://drive-5s1o.onrender.com/drive/files/first/${index}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch image');
+      }
+      const imageBlob = await response.blob();
+      const imageUrl = URL.createObjectURL(imageBlob);
+
+      // Cache the image URL
+      setImageCache((prevCache) => ({ ...prevCache, [index]: imageUrl }));
+      setImageUrl(imageUrl);
+    } catch (error) {
+      console.error('Error fetching image:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const latestData = allData[nodeType][nodeName][allData[nodeType][nodeName].length - 1];
 
   return (
@@ -316,7 +364,43 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
         <>
           <div className='centered-title'>{nodeName}</div>
           <div className='centered-title flex justify-between align-middle'>
-            {(
+            { nodeType === 'water' && analogOrDigital === 'analog' ? (
+              <button
+              className="btn btn-primary"
+              onClick={() => {
+                const nodeNameIndex = Object.values(nodeIndexMapping).indexOf(nodeName);
+                const selectedNodeIndex = Object.keys(nodeIndexMapping).find(key => nodeIndexMapping[key] === nodeName);
+                setIsImageOpen(!isImageOpen)
+                if (nodeNameIndex !== -1 && selectedNodeIndex !== -1) {
+                  const index = parseInt(selectedNodeIndex);
+                  if (!isImageOpen) {
+                    fetchImage(index);
+                  }
+                  console.log(imageUrl);
+                }
+              }}
+            >
+             {isLoading ? (
+            <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          ) : (
+            <span>{isImageOpen ? 'Close Image' : 'View Image'}</span>
+          )}
+            </button>
+            ) : (
               <span className="latest-data opacity-0">
                 this is how to scam bruh 
               </span>
@@ -371,6 +455,12 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
       )}
       {viewMode === 'all' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {imageUrl && isImageOpen && (
+          <div className="image-container md:col-span-2 flex justify-center">
+            <img className='img' src={imageUrl} alt="Node Image" />
+          </div>
+        )}
+
         {attributes.map((attr, index) => (
           <div key={attr} className="graph-item all-mode-item">
             <Line data={chartDataAll(attr, index, attributes.length)} options={chartOptions(attr, getUnit(attr))} height={400} />

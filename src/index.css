@@ -762,3 +762,7 @@ color:#05337d;
   border:solid #99ABC8;
   border-radius: 35px;
 }
+
+.img{
+  max-height: 300px;
+}

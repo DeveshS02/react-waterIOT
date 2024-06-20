@@ -18,6 +18,8 @@ import {DateTime} from 'luxon'
 const MapComponent = ({ selectedOptions, nodes, data, bounds, loading, setNavClosing, setNavOpening, hoverData }) => {
   const [selectedNode, setSelectedNode] = useState({ data: null, type: null, attributes: [], isAnalog: false, name: null, analogOrDigital: null });
 
+  const [imageCache, setImageCache] = useState({});
+
   const iconConfig = {
     tank: [createCustomIcon(icon_tanker), createCustomIcon(icon_tanker_inactive)],
     borewell: [createCustomIcon(icon_bore), createCustomIcon(icon_bore_inactive)],
@@ -166,7 +168,9 @@ const MapComponent = ({ selectedOptions, nodes, data, bounds, loading, setNavClo
             nodeType={selectedNode.type} 
             analogOrDigital={selectedNode.analogOrDigital} 
             allData={data} 
-            nodeName={selectedNode.name} />
+            nodeName={selectedNode.name}
+            imageCache= {imageCache}
+            setImageCache= {setImageCache} />
         </Modal>
       )}
     </div>
