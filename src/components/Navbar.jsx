@@ -5,6 +5,7 @@ import imagedrop from "../images/Hydrowlogo.png";
 import Dropdown from "./Dropdown";
 import StatusNode from "./status_node";
 import ImageDrive from "./ImageDrive";
+import Test from "./test";
 
 const Navbar = ({
   dropdownLabel,
@@ -117,6 +118,7 @@ const Navbar = ({
           </div>
           <div className="hidden md:flex items-center space-x-11 mr-7 text-lg">
             <button
+              className="hover:text-blue-300"
               onClick={() =>{
                 setImageDisplay(!imageDisplay);
               }}

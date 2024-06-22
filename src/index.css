@@ -817,13 +817,16 @@ color:#05337d;
 }
 
 .fields{
+  width: 60%;
+  margin: auto;
   font-size: 1.1rem;
   font-weight: 500;
   color: #1f1f21;
+  margin-top: 1rem;
 }
 
 .fields input{
-  background-color: #908989b8;
+  background-color: #c6bebebb;
   backdrop-filter: blur(8px);
   border-radius: 1rem;
   max-width: 80px;
@@ -832,7 +835,7 @@ color:#05337d;
 }
 
 .fields select{
-  background-color: #908989b8;
+  background-color: #c6bebebb;
   backdrop-filter: blur(8px);
   border-radius: 1rem;
   max-width: 150px;
@@ -845,12 +848,14 @@ color:#05337d;
   font-size: 1.05rem;
 }
 
-@media (max-width: 768px) {
-  .number{
-    flex-direction: column;
-  }
+/*test */
 
-  .tunit{
-    flex-direction: column;
-  }
+.inut{
+  width: fit-content;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
 }

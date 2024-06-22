@@ -82,11 +82,10 @@ const ImageDrive = ({setImageDisplay}) => {
         </button>
       </div>
       <h1 className='mt-3'>Image Archive</h1>
-      <div className='fields'>
 
-        <div className='number mt-6 flex gap-9 justify-center items-center'>
-          <div className='flex gap-4 justify-center'>
-            <label htmlFor="node">Node</label>
+      <div className='fields grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <div className='inut'>
+            <label htmlFor="node">Select Prawah Node</label>
             <select
               id="node"
               name="node"
@@ -98,33 +97,9 @@ const ImageDrive = ({setImageDisplay}) => {
                 <option key={key} value={key}>{value}</option>
               ))}
             </select>
-          </div>
-
-          <div className='flex items-center gap-5'>
-            <label htmlFor="n">Number of Images</label>
-            <input
-              id="n"
-              name="n"
-              value={n}
-              onChange={(e) => setN(e.target.value)}
-              required
-            />
-          </div>
         </div>
 
-        <div className='tunit flex gap-11 justify-center items-center mt-8 mb-4'>
-          <div className='time flex gap-4'>
-            <label htmlFor="t">Time Difference Value</label>
-            <input
-              id="t"
-              name="t"
-              value={t}
-              onChange={(e) => setT(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className='unit flex gap-4'>
+        <div className='inut'>
             <label htmlFor="timeUnit">Time Unit</label>
             <select
               id="timeUnit"
@@ -136,11 +111,31 @@ const ImageDrive = ({setImageDisplay}) => {
               <option value="minutes">Minutes</option>
               <option value="hours">Hours</option>
             </select>
-          </div>
         </div>
 
-        <button className='btn mb-3 mt-3' onClick={fetchImages}>Display</button>
+        <div className='inut'>
+            <label htmlFor="n">Number of Images</label>
+            <input
+              id="n"
+              name="n"
+              value={n}
+              onChange={(e) => setN(e.target.value)}
+              required
+            />
+        </div>
+
+        <div className='inut'>
+            <label htmlFor="t">Time Difference Value</label>
+            <input
+              id="t"
+              name="t"
+              value={t}
+              onChange={(e) => setT(e.target.value)}
+              required
+            />
+        </div>
       </div>
+      <button className='btn mb-3 mt-3' onClick={fetchImages}>Display Images</button>
       <div className='box grid grid-cols-1 md:grid-cols-2 gap-11' id="images">
         {images.map((image, index) => {
           const fileName = image.fileName;
