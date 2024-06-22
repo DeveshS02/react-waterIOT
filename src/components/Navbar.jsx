@@ -4,6 +4,7 @@ import image2 from "../images/hydrowfinal.png";
 import imagedrop from "../images/Hydrowlogo.png";
 import Dropdown from "./Dropdown";
 import StatusNode from "./status_node";
+import ImageDrive from "./ImageDrive";
 
 const Navbar = ({
   dropdownLabel,
@@ -22,6 +23,7 @@ const Navbar = ({
   const [isAnimating, setIsAnimating] = useState(false);
   const [showContainer, setShowContainer] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false); // Track if the user has interacted with the menu
+  const [imageDisplay, setImageDisplay] = useState(false);
 
   useEffect(() => {
     if (hasInteracted) {
@@ -49,6 +51,9 @@ const Navbar = ({
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleImageClose = () => {
+    setImageDisplay(false);
+  }
   const dropdownItems = options.map((option) => option.label);
 
   return (
@@ -111,6 +116,13 @@ const Navbar = ({
             </div>
           </div>
           <div className="hidden md:flex items-center space-x-11 mr-7 text-lg">
+            <button
+              onClick={() =>{
+                setImageDisplay(!imageDisplay);
+              }}
+            >
+              Images
+            </button>
             <a href="https://www.iiit.ac.in/" className="hover:text-blue-300">
               IIIT
             </a>
@@ -145,6 +157,13 @@ const Navbar = ({
         >
           {(isMenuOpen || isAnimating) && (
             <div className="md:hidden mt-2 pb-2 pl-2 text-white">
+              <button
+                onClick={() =>{
+                  setImageDisplay(!imageDisplay);
+                }}
+              >
+              Images
+              </button>
               <a href="https://www.iiit.ac.in/" className="block px-4 py-2">
                 IIIT
               </a>
@@ -181,6 +200,11 @@ const Navbar = ({
           setNavOpening={setNavOpening}
         />
       )}
+      {
+        imageDisplay &&(
+        <ImageDrive setImageDisplay= {setImageDisplay} />
+        )
+      }
     </div>
   );
 };
