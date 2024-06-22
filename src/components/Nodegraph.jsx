@@ -10,24 +10,6 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
   const [selectedNodes, setSelectedNodes] = useState([nodeName]);
 
   const nodeNames = Object.keys(allData[nodeType]);
-
-  const nodeIndexMapping = {
-    0: "Himalaya01",
-    1: "Himalaya02",
-    2: "SmartWaterMeter_Node_Kohli_Rooftop-72",
-    3: "SmartWaterMeter_Node_Kohli_Rooftop-73",
-    4: "PH03-70",
-    5: "SmartWaterMeter_Node_PH04-70",
-    6: "SmartWaterMeter_Node_PH04-71",
-    7: "Smart Water Meter-Retrofit Vindhya Rooftop VN04-70",
-    8: "Smart Water Meter-Retrofit Vindhya Rooftop VN04-71",
-    9: "Parijath Nivas",
-    10: "Smart Water Meter-Retrofit Bodh Bhavan Rooftop BB0",
-    11: "Smart Water Meter-Retrofit Bodh Bhavan Rooftop BB1",
-    12: "SmartWaterMeter_Node_PL00-70",
-    13: "SmartWaterMeter_Node_PL00-71",
-    14: "PH02-70"
-  };
   
   const getDistinctColor = (index, total) => {
     const hue = (index / total) * 360 + (Math.random() - 0.5) * 20; // Slight random variation in hue
