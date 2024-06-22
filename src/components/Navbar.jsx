@@ -5,7 +5,6 @@ import imagedrop from "../images/Hydrowlogo.png";
 import Dropdown from "./Dropdown";
 import StatusNode from "./status_node";
 import ImageDrive from "./ImageDrive";
-import Test from "./test";
 
 const Navbar = ({
   dropdownLabel,
