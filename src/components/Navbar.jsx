@@ -159,6 +159,7 @@ const Navbar = ({
           {(isMenuOpen || isAnimating) && (
             <div className="md:hidden mt-2 pb-2 pl-2 text-white">
               <button
+                className="block px-4 py-2"
                 onClick={() =>{
                   setImageDisplay(!imageDisplay);
                 }}
