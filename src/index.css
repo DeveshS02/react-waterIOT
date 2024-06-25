@@ -105,6 +105,12 @@
   cursor: pointer;
 }
 
+@media (max-width: 768px) {
+  .modal{
+    height: 100vh;
+    width: 100vw;
+  }
+}
 
 /* custom loading animation App.jsx*/
 
@@ -442,10 +448,10 @@ background:#750048;
   scrollbar-width: none;  
 }  
 .maincss{
-    background: linear-gradient(rgb(190, 243, 243, .3), rgb(190, 243, 243, .3) 28%, rgb(190, 243, 243, .3) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(13px);
-    overflow: hidden; 
+  background: linear-gradient(rgb(190, 243, 243, .3), rgb(190, 243, 243, .3) 28%, rgb(190, 243, 243, .3) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(13px);
+  overflow: hidden; 
 }
 .acardcss{
   background:rgb(255, 255, 255, 0.4);
@@ -453,7 +459,8 @@ background:#750048;
   -1px -1px 1px rgba(0, 180, 216, 0.3), 
   inset -3px -3px 5px rgba(255, 255, 255, 0.6), 
   inset 3px 3px 5px rgba(255, 255, 255, 0.6);
-  width: 270px;
+  width: 26%;
+  min-width: 200px;
 }
 .icardcss{
   background:rgb(255, 255, 255, 0.4);
@@ -461,7 +468,8 @@ background:#750048;
   -1px -1px 1px rgba(0, 180, 216, 0.3), 
   inset -3px -3px 5px rgba(255, 255, 255, 0.6), 
   inset 3px 3px 5px rgba(255, 255, 255, 0.6);
- width: 270px;
+ width: 26%;
+ min-width: 200px;
 }
 .heading{
   overflow:scroll;
@@ -544,7 +552,11 @@ background:#750048;
   animation: genieOut 1.2s forwards cubic-bezier(0.25, 0.8, 0.25, 1);
   animation-delay: 0.03s;
 }
-
+@media (max-width: 768px) { 
+  .maincss {
+    width: 100vw;
+  }
+}
 
 /* CSS for Index */
 
