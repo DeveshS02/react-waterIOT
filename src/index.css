@@ -235,6 +235,7 @@ position: relative;
   border-radius: 1rem;
   color: #97266d;
   padding: 0.5rem;
+  max-width: 300px;
 }
 
 .transparent-dropdown option {
@@ -295,6 +296,7 @@ position: relative;
   padding: 0.5rem;
   border-right: 0.09rem solid #97266d;
   margin-top: 2rem;
+  min-width: 150px;
 }
 
 .node-item {
@@ -317,6 +319,7 @@ position: relative;
 .compare-view-container {
   display: flex;
   height: 100%;
+  width: 100%;
 }
 
 .centered-title {
@@ -338,6 +341,11 @@ position: relative;
   width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+.mid-box{
+  width: 80%;
+  margin: auto;
 }
 
 @media (max-width: 768px) {
@@ -377,14 +385,19 @@ position: relative;
   align-self: flex-end;
 }
 
+.controls .transparent-dropdown {
+  max-width: 150px;
+}
+
 .controls .btn-secondary {
   align-self: center;
   margin-bottom: 0;
 }
 
 .selected-nodes {
-  width: 100%;
-  max-width: none;
+  width: 60%;
+  margin: auto;
+  margin-top: 1rem;
   border-right: none;
   padding-left: 0;
   border-bottom: 1px #274068 solid;
@@ -404,7 +417,6 @@ position: relative;
   margin-top: 1rem;
 }
 }
-
 
 /*css for custom scrollbar in modal graph Modal.jsx */
 

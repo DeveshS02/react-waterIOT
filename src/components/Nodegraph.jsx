@@ -415,7 +415,7 @@ const NodeGraph = ({ data, attributes, nodeType, allData, nodeName, analogOrDigi
                   ))}
                 </ul>
               </div>
-              <div className='grow'>
+              <div className='mid-box'>
                 <h3 className="centered-title">
                   {(() => {
                     switch (nodeType) {
