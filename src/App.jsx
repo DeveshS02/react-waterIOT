@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { parse, isBefore, format } from 'date-fns';
 import Navbar from "./components/Navbar";
-import IndexButton from "./components/IndexButton";
-import IndexPanel from "./components/IndexPanel";
+import Index from "./components/Index";
 import MapComponent from "./components/Map"; // Ensure the import is correct
 import waterTankImage from "./images/water_tank.png";
 import prawahImage from "./images/water-meter-new.png";
@@ -26,8 +25,6 @@ const options = [
 
 const App = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
   const [isNavClosing, setNavClosing]= useState(false);
   const [isNavOpening, setNavOpening]= useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
@@ -282,21 +279,6 @@ const App = () => {
     });
   };
 
-  const handleButtonClick = () => {
-    setIsOpen(true);
-    setIsClosing(false);
-  };
-  const handleClose = () => {
-    setIsClosing(true);
-  };
-
-  const handleAnimationEnd = () => {
-    if (isClosing) {
-      setIsOpen(false);
-      setIsClosing(false);
-    }
-  };
-
   const getDropdownLabel = () => {
     if (selectedOptions.length === 0) return "All Nodes";
     if (selectedOptions.length > 1) return "Multi";
@@ -315,52 +297,37 @@ const App = () => {
         
         <>
           <Navbar
-          dropdownLabel={getDropdownLabel()}
-          options={options}
-          selectedOptions={selectedOptions}
-          toggleOption={toggleOption}
-          data={filteredData}
-          nodes={nodes}
-          isNavClosing={isNavClosing}
-          isNavOpening={isNavOpening}
-          setNavClosing={setNavClosing}
-          setNavOpening={setNavOpening}
-          statusButtonRef={statusButtonRef}
+            dropdownLabel={getDropdownLabel()}
+            options={options}
+            selectedOptions={selectedOptions}
+            toggleOption={toggleOption}
+            data={filteredData}
+            nodes={nodes}
+            isNavClosing={isNavClosing}
+            isNavOpening={isNavOpening}
+            setNavClosing={setNavClosing}
+            setNavOpening={setNavOpening}
+            statusButtonRef={statusButtonRef}
         />
       
 
-      <MapComponent
-        selectedOptions={selectedOptions}
-        nodes={nodes}
-        data={filteredData}
-        bounds={bounds}
-        loading={loading}
-        setNavClosing={setNavClosing}
-        setNavOpening={setNavOpening}
-        hoverData={hoverData}
-      />
+        <MapComponent
+          selectedOptions={selectedOptions}
+          nodes={nodes}
+          data={filteredData}
+          bounds={bounds}
+          loading={loading}
+          setNavClosing={setNavClosing}
+          setNavOpening={setNavOpening}
+          hoverData={hoverData}
+        />
 
-      <div className="fixed bottom-4 left-4 p-2 z-50">
-        {!isOpen && !isClosing && (
-          <IndexButton handleButtonClick={handleButtonClick} indexButtonRef={indexButtonRef}/>
-        )}
-        <div
-          className={`${
-            isOpen ? (isClosing ? "closing" : "blockk") : "hiddenn"
-          }`}
-          onAnimationEnd={handleAnimationEnd}
-        >
-          {isOpen && (
-            <IndexPanel
-              isOpen={isOpen}
-              handleClose={handleClose}
-              options={options}
-              selectedOptions={selectedOptions}
-              toggleOption={toggleOption}
-            />
-          )}
-        </div>
-      </div>
+        <Index
+          indexButtonRef={indexButtonRef}
+          options={options}
+          selectedOptions={selectedOptions}
+          toggleOption={toggleOption}
+        />
       {!loading && (
         <div>
           <WelcomeContainer

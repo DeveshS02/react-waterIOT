@@ -878,6 +878,12 @@ color:#05337d;
   font-size: 1.05rem;
 }
 
+@media (max-width: 768px) {
+  .img-display{
+    width: 80%;
+  }
+}
+
 /*test */
 
 .inut{
